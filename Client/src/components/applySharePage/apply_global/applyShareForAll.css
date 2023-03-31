@@ -1,0 +1,17 @@
+.applyShareForAll-css{
+    top: 50px;
+    right: 50px;
+    position: fixed;
+    z-index: 999;
+    padding: 0 0 15px 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0 1em;
+    width: max-content;
+    padding: 5px 15px;
+    /* background-color: #efefefee; */
+    border-radius: 7px;
+    box-shadow: 0 20px 0px white;
+}

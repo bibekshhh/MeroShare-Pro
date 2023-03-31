@@ -1,0 +1,9 @@
+.portfolio-cards{
+    margin: 1em 0;
+    display: flex !important;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 3em;
+    width: inherit;
+    min-width: 100%;
+}

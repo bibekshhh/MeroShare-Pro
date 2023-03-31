@@ -1,0 +1,61 @@
+.app-wrapper{
+    width: 100%;
+    height: 100vh;
+    max-height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    background-color: #ebeef0;
+}
+
+.main{
+    box-sizing: border-box;
+    margin: 30px 30px;
+    padding: 25px 10px;
+    width: 100%;
+    height: calc(100vh - 60px);
+    max-height: 100vh;
+    overflow: auto;
+    display: flex;
+    flex-direction: row;
+    background-color: white;
+    border: 1px solid #dddd;
+    box-shadow: 0 2.5px 5px #dddd;
+
+}
+
+label.content-header{
+    font-size: 22px;
+    font-weight: 600;
+    margin-left: 20px;
+}
+
+label.internal-content-header{
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.arco-tabs-pane{
+    max-width: 98% !important;
+}
+
+.arco-menu-collapse-button{
+    width: 45px !important;
+    height: 45px !important;
+    padding: 0px !important;
+    border-radius: 50% !important;
+    margin-right: -12%;
+    box-shadow: 0 2.5px 5px #dddd !important;
+    color: black;
+    border: 2px solid #dddd;
+    transition: 0.4s ease;
+    background-color: white !important;
+}
+
+.arco-menu-collapse-button:hover{
+    width: 50px !important;
+    height: 50px !important;
+    border: 2px solid #1868fccc;
+
+}

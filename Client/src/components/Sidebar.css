@@ -1,0 +1,46 @@
+.menu-demo {
+  box-sizing: border-box;
+  width: auto;
+  height: 100vh;
+  background-color: var(--color-neutral-2);
+}
+
+.menu-demo .arco-menu-inner {
+  overflow-y: auto;
+}
+
+.sidebar-container > .arco-menu{
+  font-size: 15px !important;
+}
+
+.sidebar-container .arco-menu-item,
+.sidebar-container .arco-menu-inline-header{
+  height: 45px;
+  display: flex;
+  align-items: center;
+  margin: 0px 0 !important;
+}
+
+.sidebar-container .arco-menu-inline-header{
+  margin: 10px auto!important;
+}
+.arco-menu-selected{
+  background-color: rgb(226, 238, 255) !important;
+}
+
+div.arco-menu-item.arco-menu-selected{
+  color: white !important;
+  background-color: #0b5faa !important;
+}
+
+.arco-menu-inline > .arco-icon{
+  color: var(--color-text-3) !important;
+}
+
+.arco-menu-selected > a > .arco-icon{
+  color: white !important;
+}
+
+/* .arco-tabs-header-title-active > .arco-tabs-header-title-text{
+  border: 1px solid rgb(var(--primary-5));
+} */

@@ -1,0 +1,29 @@
+.manage{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+.manage .content{
+    width: 100%;
+    max-width: 100%;
+    padding: 0 1.5em;
+    width: 100% !important;
+    margin-top: 1em;
+    overflow-x: hidden;
+}
+
+.content .ipoList{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1.2em 1em;
+}
+
+.sub-header{
+    font-size: 18px;
+    font-weight: 600;
+    margin: 10px 0;
+}
