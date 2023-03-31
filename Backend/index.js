@@ -4,6 +4,7 @@ import cors from "cors"
 import mongoose from "mongoose";
 import authRouter from "./routes/auth.routes.js";
 import applyIPORouter from "./routes/applyIPO.routes.js";
+import actionsRouter from "./routes/actions.routes.js";
 dotenv.config()
 
 const app = express();
@@ -25,6 +26,7 @@ app.get("/", (req, res) => {
 })
 app.use("/auth", authRouter)
 app.use("/apply", applyIPORouter)
+app.use("/action", actionsRouter)
 
 app.listen(process.env.PORT || 9000, () => {
     console.log(`Success: Listening on port ${process.env.PORT || 9000}`)
