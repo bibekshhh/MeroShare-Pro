@@ -1,18 +1,18 @@
 import './App.css';
 import {BrowserRouter, Routes, Route, Outlet} from "react-router-dom"
+import { useState } from 'react';
+
+import "@arco-design/web-react/dist/css/arco.css";
+import "bootstrap/dist/js/bootstrap.min.js"
+import "bootstrap/dist/css/bootstrap.min.css"
 
 //importing pages
 import ApplyShare from './pages/applyShare.route';
 import Sidebar from './components/Sidebar';
 import CheckResult from './pages/checkResult.route';
-import Login from './pages/login.route';
+import Login from './pages/login/login.route';
 import Manage from './pages/manage/Manage.route';
-import Home from './pages/home.route';
-
-import "@arco-design/web-react/dist/css/arco.css";
-import "bootstrap/dist/js/bootstrap.min.js"
-import "bootstrap/dist/css/bootstrap.min.css"
-import { useState } from 'react';
+import Home from './pages/home/home.route';
 import PageNotFound from './pages/pageNotFound';
 
 function App() {

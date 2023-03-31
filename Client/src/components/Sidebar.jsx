@@ -19,9 +19,10 @@ const Sidebar = () => {
             defaultOpenKeys={['1']}
             defaultSelectedKeys={['0_0']}
           >
+            <Link to="/">
             <MenuItem key='0_0' className="my-0 border-bottom">
-              <Link to="/"><IconApps /><a href='/'>Dashboard</a></Link>
-            </MenuItem>
+               <IconApps /> Dashboard
+            </MenuItem> </Link>
             <SubMenu
               key='1'
               className="my-0 border-bottom"

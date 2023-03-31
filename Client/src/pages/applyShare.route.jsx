@@ -8,11 +8,12 @@ import {
 } from '@arco-design/web-react';
 
 import { IconArrowRight } from '@arco-design/web-react/icon';
-import ApplyUserProfile from '../components/applySharePage/userProfile';
-import ApplySharesForIndividualAccount from "../components/applySharePage/apply_individual/applyIndividualShare"
+import { useState } from 'react';
 
 import "./css/applyShare.css"
-import { useState } from 'react';
+
+import ApplyUserProfile from '../components/applySharePage/userProfile';
+import ApplySharesForIndividualAccount from "../components/applySharePage/apply_individual/applyIndividualShare"
 import PortfolioCards from '../components/applySharePage/portfolioCards';
 import ApplyShareForAll from '../components/applySharePage/apply_global/applyShareForAll';
 

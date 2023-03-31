@@ -1,0 +1,16 @@
+/* .arco-menu-inner > .arco-menu-item:first-of-type.arco-menu-selected svg{
+    color: white !important;
+} */
+
+.home .content{
+    width: 100%;
+    max-width: 100%;
+    padding: 0 1.5em;
+    width: 100% !important;
+    margin-top: 1em;
+    overflow-x: hidden;
+}
+
+.home .add-accounts-btn{
+    background-color: black !important;
+}
