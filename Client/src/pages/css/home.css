@@ -14,3 +14,7 @@
 .home .add-accounts-btn{
     background-color: black !important;
 }
+
+.home .hideBankId{
+    display: none !important;
+}
