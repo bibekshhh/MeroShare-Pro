@@ -2,7 +2,7 @@
 import { useNavigate } from "react-router-dom";
 
 import LoginArt from './artt.svg'
-import "./css/login.css"
+import "../css/login.css"
 
 const Login = ({logStatus}) => {
     const navigate = useNavigate();
