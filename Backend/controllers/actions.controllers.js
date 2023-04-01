@@ -189,6 +189,8 @@ export async function addAccounts(req, res) {
   try {
     const { name, boid, clientId, username, password, crnNumber } = req.body;
 
+    let { userId } = req.userData;
+
     if (!name || !boid || !clientId || !username || !password || !crnNumber) {
       return res
         .status(400)
@@ -196,6 +198,7 @@ export async function addAccounts(req, res) {
     }
 
     const newAccount = new Account({
+      userId,
       name,
       boid,
       clientId,
@@ -207,6 +210,20 @@ export async function addAccounts(req, res) {
     await newAccount.save();
 
     res.status(201).json({ success: true, message: "New account added" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ status: false, error: error.message });
+  }
+}
+
+export async function getAllAccounts(req, res) {
+  try {
+
+    let { userId } = req.userData;
+
+    const accounts = await Account.find({ userId });
+    res.send(accounts)
+
   } catch (error) {
     console.log(error);
     res.status(500).json({ status: false, error: error.message });
