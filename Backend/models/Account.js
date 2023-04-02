@@ -1,7 +1,13 @@
 import mongoose from "mongoose";
 
+const { ObjectId } = mongoose.Schema.Types
+
 const accountSchema = new mongoose.Schema(
   {
+    userId: {
+      type: ObjectId,
+      ref: "users"
+    },
     name: {
       type: String,
       required: true,
