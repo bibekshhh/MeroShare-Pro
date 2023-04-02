@@ -27,7 +27,7 @@ export async function getUpcomingIPOList(req, res) {
 
     const resData = await axios.request(config);
     const filteredData = await resData.data.d
-    .filter(
+      .filter(
         (item) =>
           item.IsActive === true &&
           item.IsDeleted === false &&
@@ -54,8 +54,9 @@ export async function getUpcomingIPOList(req, res) {
   }
 }
 
-export async function getAvailableIssues(req, res) {
+export async function getProfileData(req, res) {
   try {
+
     const { clientId, username, password } = req.body;
 
     if (!clientId || !username || !password) {
@@ -66,7 +67,7 @@ export async function getAvailableIssues(req, res) {
 
     const token = await getAuthToken(clientId, username, password);
 
-    const data = {
+    const applicableIsssueOptions = {
       filterFieldParams: [
         {
           key: "companyIssue.companyISIN.script",
@@ -101,7 +102,7 @@ export async function getAvailableIssues(req, res) {
       ],
     };
 
-    const response = await fetch(
+    const applicableIssueResponse = await fetch(
       "https://webbackend.cdsc.com.np/api/meroShare/companyShare/applicableIssue/",
       {
         method: "POST",
@@ -109,29 +110,13 @@ export async function getAvailableIssues(req, res) {
           "content-type": "application/json",
           authorization: token,
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(applicableIsssueOptions),
       }
     );
 
-    const parsedResponse = await response.json();
+    const applicableIssueParsedResponse = await applicableIssueResponse.json();
 
-    res.send(parsedResponse);
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ status: false, error: error.message });
-  }
-}
 
-export async function getMyPortfolio(req, res) {
-  try {
-    const { clientId, username, password } = req.body;
-    if (!clientId || !username || !password) {
-      return res
-        .status(400)
-        .json({ success: false, error: "All fields are required." });
-    }
-
-    const token = await getAuthToken(clientId, username, password);
     const rawOwnDetails = await getOwnDetails(token);
 
     const { clientCode, demat } = rawOwnDetails;
@@ -145,7 +130,7 @@ export async function getMyPortfolio(req, res) {
       sortAsc: true,
     };
 
-    const response = await fetch(
+    const myPortfolioResponse = await fetch(
       "https://webbackend.cdsc.com.np/api/meroShareView/myPortfolio/",
       {
         method: "POST",
@@ -157,33 +142,18 @@ export async function getMyPortfolio(req, res) {
       }
     );
 
-    const parsedResponse = await response.json();
+    const myPortfolioParsedResponse = await myPortfolioResponse.json();
 
-    res.send(parsedResponse);
+
+    res.json({ success: true, myPortfoilio: myPortfolioParsedResponse, ownDetails: rawOwnDetails, applicableIssues: applicableIssueParsedResponse})
+
+
   } catch (error) {
     console.log(error);
     res.status(500).json({ status: false, error: error.message });
   }
 }
 
-export async function getUserInfo(req, res) {
-  try {
-    const { clientId, username, password } = req.body;
-    if (!clientId || !username || !password) {
-      return res
-        .status(400)
-        .json({ success: false, error: "All fields are required." });
-    }
-
-    const token = await getAuthToken(clientId, username, password);
-    const rawOwnDetails = await getOwnDetails(token);
-
-    res.send(rawOwnDetails);
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ status: false, error: error.message });
-  }
-}
 
 export async function addAccounts(req, res) {
   try {
@@ -218,9 +188,8 @@ export async function addAccounts(req, res) {
 
 export async function getAllAccounts(req, res) {
   try {
-    const accounts = await Account.find({ });
-    res.send(accounts)
-
+    const accounts = await Account.find({});
+    res.send(accounts);
   } catch (error) {
     console.log(error);
     res.status(500).json({ status: false, error: error.message });

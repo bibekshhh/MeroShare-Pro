@@ -1,13 +1,11 @@
-import { getUpcomingIPOList, getAvailableIssues, getMyPortfolio, getUserInfo, addAccounts, getAllAccounts  } from "../controllers/actions.controllers.js";
+import { getUpcomingIPOList, getProfileData, addAccounts, getAllAccounts  } from "../controllers/actions.controllers.js";
 import { Router } from "express";
 
 const actionsRouter = Router();
 
 actionsRouter
 .get("/upcomingIPO", getUpcomingIPOList)
-.post("/availableIssues", getAvailableIssues)
-.post("/portfolio", getMyPortfolio)
-.post("/userinfo",  getUserInfo)
+.post("/profile", getProfileData)
 .post("/add-account", addAccounts)
 .get("/all-accounts", getAllAccounts)
 
