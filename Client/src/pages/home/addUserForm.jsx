@@ -44,7 +44,9 @@ const AddUserForm = () => {
                 method: 'post',
                 maxBodyLength: Infinity,
                 url: 'http://localhost:9000/action/add-account',
-                headers: { },
+                headers: { 
+                    "authorization": "Bearer " + localStorage.getItem("token")
+                },
                 data: addAccount
             })
 
