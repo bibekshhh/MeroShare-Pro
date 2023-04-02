@@ -45,7 +45,7 @@ const ApplyShareForAll = ({applicableIssue, accounts}) => {
           setTimeout(() => form.resetFields(), 1000)
           Message.success('Success !');
         })
-        .catch((error) => {
+        .catch(() => {
           setFormValidated(false)
           Message.error("All the fields are required!")
         });

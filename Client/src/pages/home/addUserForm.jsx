@@ -1,4 +1,4 @@
-import { Modal, Button, Form, Input, Select, Message } from '@arco-design/web-react';
+import { Modal, Spin, Button, Form, Input, Select, Message, Notification } from '@arco-design/web-react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import "../css/home.css";
@@ -12,35 +12,64 @@ const AddUserForm = () => {
     const [form] = Form.useForm();
 
     function validateForm() {
-        form.validate().then((res) => {
+        form.validate()
+        .then(async (res) => {
             let {
                 name, 
                 boid, 
-                clientID,
+                clientId,
                 username, 
                 password, 
                 crnNumber
-            } = form.getFieldsValue(["name", "boid", "clientID", "username", "password", "crnNumber"]);
+            } = form.getFieldsValue(["name", "boid", "clientId", "username", "password", "crnNumber"]);
 
-            clientID = clientID.split(' ')[0].trim()
-            console.log({name, boid, clientID, username, password, crnNumber})
+            clientId = clientId.split(' ')[0].trim();
+            crnNumber = crnNumber.toString();
 
-            setConfirmLoading(true);
-            setTimeout(() => {
-                Message.success('Success !');
+            if (!name || !boid || !clientId || !username || !password || !crnNumber) {
+                setVisible(true)
+                setConfirmLoading(false);
+                Message.error("Please enter all the fields")
+            }
+            
+            if (!Number.isInteger(parseInt(crnNumber))){
+                setVisible(true)
+                Message.error("CRN must be 8 digit number")
+            }
+
+            const addAccount = {name, boid, clientId, username, password, crnNumber};
+            console.log(addAccount)
+
+            const addAccountRes = await axios.request({
+                method: 'post',
+                maxBodyLength: Infinity,
+                url: 'http://localhost:9000/action/add-account',
+                headers: { },
+                data: addAccount
+            })
+
+            if (addAccountRes.status === 201 ){
+                Notification.success({
+                    title: 'Success',
+                    content: 'Account added Successfully!',
+                  })
                 form.resetFields()
                 setVisible(false);
                 setConfirmLoading(false);
-            }, 1500);
-        });
+            }
+        })
+        .catch(() => { 
+            setConfirmLoading(false);
+            Message.error("All the fields are required")
+        })
     }
 
     const formItemLayout = {
         labelCol: {
-        span: 4,
+            span: 4,
         },
         wrapperCol: {
-        span: 20,
+            span: 20,
         },
     };
 
@@ -60,7 +89,7 @@ const AddUserForm = () => {
                 console.log(error)
             }
         })()
-    },[]);
+    },[setBankList]);
 
     return(
         <>
@@ -74,7 +103,9 @@ const AddUserForm = () => {
         visible={visible}
         confirmLoading={confirmLoading}
         onCancel={() => {
+            setConfirmLoading(false);
             setVisible(false);
+            form.resetFields()
         }}
         footer={
             <>
@@ -91,6 +122,7 @@ const AddUserForm = () => {
                     }}> Submit </Button>
             </>
         }>
+            <Spin delay={500} size={30} tip='This may take a while...' loading={confirmLoading}>
             <Form
             {...formItemLayout}
             form={form}
@@ -103,11 +135,26 @@ const AddUserForm = () => {
                 <FormItem label='Name' field='name' rules={[{ type: 'string', required: true }]}>
                     <Input placeholder='Enter name' />
                 </FormItem>
-                <FormItem label='BOID' field='boid' rules={[{ type: 'string', required: true }]}>
+                <FormItem label='BOID' field='boid' 
+                rules={[
+                    { 
+                        type: 'string',
+                        required: true,
+                        // validator: (value, callback) => {
+                        //     if (value.length !== 16) {
+                        //       callback('Must be 16 digit number');
+                        //     }
+                        //   },
+                    }
+                    ]}>
                     <Input placeholder='Enter 16 digit BOID/Demat' />
                 </FormItem>
-                <FormItem label='Client ID' required field='clientID' rules={[{ type: 'string', required: true }]}>
-                    <Select options={bankList.map(item => `${item.id}  ${item.name}`)} />
+                <FormItem label='Client ID' required field='clientId' rules={[{ type: 'string', required: true }]}>
+                    <Select options={
+                        bankList.length > 0 ?
+                        (bankList.map(item => `${item.id}  ${item.name}`))
+                        : (['No bank list founds'])
+                        } />
                 </FormItem>
                 <FormItem label='Username' field='username' rules={[{ type: 'string', required: true }]}>
                     <Input placeholder='Enter Mero Share username' />
@@ -115,8 +162,23 @@ const AddUserForm = () => {
                 <FormItem label='Password' field='password' rules={[{ type: 'string', required: true }]}>
                     <Input placeholder='Enter Mero Share password' />
                 </FormItem>
+                <FormItem label='CRN' field='crnNumber' 
+                rules={[
+                    { 
+                        type: 'number',
+                        required: true,
+                        // validator: (value, callback) => {
+                        //     if (value.length !== 8) {
+                        //       callback('Must be 8 digit number');
+                        //     }
+                        // },
+                    }
+                    ]}>
+                    <Input placeholder='Enter 8 digit Mero Share CRN number' />
+                </FormItem>
                 
             </Form>
+            </Spin>
         </Modal>
         </>
     )

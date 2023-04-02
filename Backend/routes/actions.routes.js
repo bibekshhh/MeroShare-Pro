@@ -3,7 +3,8 @@ import { Router } from "express";
 
 const actionsRouter = Router();
 
-actionsRouter.get("/upcomingIPO", getUpcomingIPOList)
+actionsRouter
+.get("/upcomingIPO", getUpcomingIPOList)
 .post("/availableissues", getAvailableIssues)
 .post("/portfolio", getMyPortfolio)
 .post("/userinfo",  getUserInfo)

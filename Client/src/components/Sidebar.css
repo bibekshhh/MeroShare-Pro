@@ -44,3 +44,7 @@ div.arco-menu-item.arco-menu-selected{
 /* .arco-tabs-header-title-active > .arco-tabs-header-title-text{
   border: 1px solid rgb(var(--primary-5));
 } */
+
+.arco-menu-inner .arco-menu-item:first-of-type.arco-menu-selected > svg {
+  color: white !important;
+}

@@ -1,4 +1,4 @@
-import { Modal, Button, Form, Select, Message, InputNumber, Tag } from '@arco-design/web-react';
+import { Modal, Spin, Button, Form, Select, Notification, Message, InputNumber, Tag } from '@arco-design/web-react';
 import { Checkbox, Space, Typography } from '@arco-design/web-react';
 
 import { useState } from 'react';
@@ -18,15 +18,21 @@ const ApplySharesForIndividualAccount = ({applicableIssue}) => {
   })
 
   const applyShare = () => {
-    form.validate().then((res) => {
+    form.validate()
+    .then((res) => {
+      setConfirmLoading(true)
       setTimeout(() => {
         form.resetFields();
-        Message.success('Success !');
+        Notification.success({
+          title: 'Success',
+          content: 'Applied Successfully!',
+        })
         console.log(res)
         setVisible(false);
         setConfirmLoading(false);
-      }, 1500);
-    });
+      }, 3500);
+    })
+    .catch(() => Message.error("All the fields are required"))
   }
 
   const formItemLayout = {
@@ -107,6 +113,7 @@ const ApplySharesForIndividualAccount = ({applicableIssue}) => {
           }
         confirmLoading={confirmLoading}
         onCancel={() => setVisible(false)}>
+        <Spin delay={500} size={30} tip='This may take a while...' loading={confirmLoading}>
         <Form
           {...formItemLayout}
           form={form}
@@ -170,6 +177,7 @@ const ApplySharesForIndividualAccount = ({applicableIssue}) => {
                 />
           </FormItem>
         </Form>
+        </Spin>
       </Modal>
     </div>
   );

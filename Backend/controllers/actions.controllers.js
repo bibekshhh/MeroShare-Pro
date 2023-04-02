@@ -4,7 +4,7 @@ import { getAuthToken, getOwnDetails } from "../utils/index.js";
 import User from "../models/User.js";
 import Account from "../models/Account.js";
 
-export async function getUpcomingIPOList(req, resOut) {
+export async function getUpcomingIPOList(req, res) {
   try {
     const raw = JSON.stringify({
       offset: 1,
@@ -25,9 +25,9 @@ export async function getUpcomingIPOList(req, resOut) {
       data: raw,
     };
 
-    const res = await axios.request(config);
-    const filteredData = await res.data.d
-      .filter(
+    const resData = await axios.request(config);
+    const filteredData = await resData.data.d
+    .filter(
         (item) =>
           item.IsActive === true &&
           item.IsDeleted === false &&
@@ -45,7 +45,7 @@ export async function getUpcomingIPOList(req, resOut) {
         EndDateString: item.EndDateString,
       }));
 
-    resOut.send(filteredData);
+    res.json(filteredData);
     console.log("Sent successfully");
     console.log(filteredData);
   } catch (error) {

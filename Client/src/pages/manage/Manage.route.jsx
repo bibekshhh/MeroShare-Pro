@@ -16,7 +16,7 @@ const Manage = () => {
                 const config = {
                     method: 'get',
                     maxBodyLength: Infinity,
-                    url: 'http://localhost:8080/upcomingIPO',
+                    url: 'http://localhost:9000/action/upcomingIPO',
                     headers: {},
                 };
                 
@@ -24,12 +24,9 @@ const Manage = () => {
                 setUpcomingIPOList((res.data).reverse())
             } catch (error){
                 setLoading(false)
-                console.log(error)
             }
         })()
     },[setUpcomingIPOList, setLoading]);
-
-    console.log(upcomingIPOList);
 
     return (
         <div className='manage'>

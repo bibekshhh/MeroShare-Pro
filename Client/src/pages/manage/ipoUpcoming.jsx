@@ -4,6 +4,7 @@ import { IconClockCircle } from '@arco-design/web-react/icon';
 const ListUpcomingIPOs = ({item}) => {
     return(
         <Card
+            key={item.CompanyName + item.EndDateNP}
             style={{ width: 250 }}
             className="upcoming-ipo-list-card"
             title={item.StockSymbol}

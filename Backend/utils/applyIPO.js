@@ -81,7 +81,6 @@ export default async function applyIPO(
       };
     }
 
-
     return { success: true };
   } catch (error) {
     console.log(error);

@@ -18,3 +18,7 @@
 .home .hideBankId{
     display: none !important;
 }
+
+.arco-modal-content .arco-spin{
+    display: block !important;
+}
