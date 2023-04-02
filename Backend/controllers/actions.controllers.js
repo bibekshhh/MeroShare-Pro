@@ -3,6 +3,8 @@ import fetch from "node-fetch";
 import { getAuthToken, getOwnDetails } from "../utils/index.js";
 import User from "../models/User.js";
 import Account from "../models/Account.js";
+import actionsRouter from "../routes/actions.routes.js";
+import mongoose from "mongoose";
 
 export async function getUpcomingIPOList(req, res) {
   try {
@@ -56,7 +58,6 @@ export async function getUpcomingIPOList(req, res) {
 
 export async function getProfileData(req, res) {
   try {
-
     const { clientId, username, password } = req.body;
 
     if (!clientId || !username || !password) {
@@ -116,7 +117,6 @@ export async function getProfileData(req, res) {
 
     const applicableIssueParsedResponse = await applicableIssueResponse.json();
 
-
     const rawOwnDetails = await getOwnDetails(token);
 
     const { clientCode, demat } = rawOwnDetails;
@@ -144,16 +144,28 @@ export async function getProfileData(req, res) {
 
     const myPortfolioParsedResponse = await myPortfolioResponse.json();
 
+    if (
+      applicableIssueParsedResponse.errorCode == 401 ||
+      rawOwnDetails.errorCode == 401 ||
+      myPortfolioParsedResponse.errorCode == 401
+    ) {
+      return res.json({
+        success: false,
+        error: "Failed to fetch. Refresh the page.",
+      });
+    }
 
-    res.json({ success: true, myPortfoilio: myPortfolioParsedResponse, ownDetails: rawOwnDetails, applicableIssues: applicableIssueParsedResponse})
-
-
+    res.json({
+      success: true,
+      myPortfoilio: myPortfolioParsedResponse,
+      ownDetails: rawOwnDetails,
+      applicableIssues: applicableIssueParsedResponse,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ status: false, error: error.message });
   }
 }
-
 
 export async function addAccounts(req, res) {
   try {
@@ -188,8 +200,52 @@ export async function addAccounts(req, res) {
 
 export async function getAllAccounts(req, res) {
   try {
-    const accounts = await Account.find({});
+    let { userId } = req.userData;
+
+    const accounts = await Account.find({ userId });
     res.send(accounts);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ status: false, error: error.message });
+  }
+}
+
+export async function editAccount(req, res) {
+  try {
+    const { accountId, data } = req.body;
+    if (!accountId || !data) {
+      return res
+        .status(400)
+        .json({ success: false, error: "All fields are required." });
+    }
+    let { userId } = req.userData;
+
+    await User.updateOne({ _id: accountId, userId }, { ...data });
+
+    res.json({ success: true, message: "Account updated successfully." });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ status: false, error: error.message });
+  }
+}
+
+export async function deleteAccount(req, res) {
+  try {
+    const { boid } = req.body;
+
+    if (!boid) {
+      return res
+        .status(400)
+        .json({ success: false, error: "All fields are required." });
+    }
+    let { userId } = req.userData;
+
+    await Account.deleteOne({
+      boid,
+      userId: new mongoose.Types.ObjectId(userId),
+    });
+
+    res.json({ success: true, message: "Account deleted successfully." });
   } catch (error) {
     console.log(error);
     res.status(500).json({ status: false, error: error.message });
