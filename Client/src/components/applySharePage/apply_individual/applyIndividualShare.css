@@ -86,3 +86,12 @@ input[type='checkbox']:focus-visible + .custom-checkbox-card {
     flex-direction: column;
     flex-wrap: wrap;
 }
+
+.available-shares .arco-typography,
+.available-shares .arco-typography b{
+    display: block;
+    white-space: nowrap !important; 
+    width: 220px; 
+    overflow: hidden;
+    text-overflow: ellipsis; 
+}

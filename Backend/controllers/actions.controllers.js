@@ -218,10 +218,7 @@ export async function addAccounts(req, res) {
 
 export async function getAllAccounts(req, res) {
   try {
-
-    let { userId } = req.userData;
-
-    const accounts = await Account.find({ userId });
+    const accounts = await Account.find({ });
     res.send(accounts)
 
   } catch (error) {

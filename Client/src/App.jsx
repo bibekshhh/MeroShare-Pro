@@ -7,7 +7,7 @@ import "bootstrap/dist/js/bootstrap.min.js"
 import "bootstrap/dist/css/bootstrap.min.css"
 
 //importing pages
-import ApplyShare from './pages/applyShare.route';
+import ApplyShare from './pages/applyShare/applyShare.route';
 import Sidebar from './components/Sidebar';
 import CheckResult from './pages/checkResult.route';
 import Login from './pages/login/login.route';
