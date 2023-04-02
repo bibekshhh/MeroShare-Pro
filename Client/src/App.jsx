@@ -14,9 +14,21 @@ import Login from './pages/login/login.route';
 import Manage from './pages/manage/Manage.route';
 import Home from './pages/home/home.route';
 import PageNotFound from './pages/pageNotFound';
+import { useEffect } from 'react';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
+  
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+  if(!token) {
+    setLoggedIn(false)
+  } else {
+    setLoggedIn(true)
+  }
+  }, [loggedIn])
+
   return (
     <>
       <div className="App">

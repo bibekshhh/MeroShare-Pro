@@ -1,21 +1,49 @@
-// import { useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import LoginArt from './artt.svg'
 import "../css/login.css"
+import { Notification } from "@arco-design/web-react";
+
+import config from "../../config";
 
 const Login = ({logStatus}) => {
     const navigate = useNavigate();
 
-    const loginHandle = (e) => {
+    const [email , setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    const loginHandle = async (e) => {
         e.preventDefault();
 
-        const timer = setTimeout(() => {
-            logStatus.setLoggedIn(true)
-            navigate('/')
-        }, 1000);
+        if(!email || !password) {
+           return Notification.error({ 
+            title: "Error",
+            content: "All fields are required."
+           })
+        }
 
-        return () => clearTimeout(timer)
+        const res = await fetch(`${config.API_URL}/auth/login`, {
+            method: "POST",
+            headers: {
+                "content-type": "application/json"
+            },
+            body: JSON.stringify({ email , password })
+        });
+
+        const data = await res.json();
+
+        if(data.success == false || data.error) {
+            return Notification.error({
+                title: "Error",
+                content: data.error
+            })
+        }
+
+        localStorage.setItem("token", data.token)
+        logStatus.setLoggedIn(true)
+
+        navigate("/apply")
     }
 
     return (
@@ -27,8 +55,8 @@ const Login = ({logStatus}) => {
         <div className="login-form-container">
             <div className="login-form">
                 <h3 className="org-name">MeroShare Pro</h3>
-                <input type="text" className="input-email" placeholder="Phone number, user or email" />
-                <input type="password" className="input-password" placeholder="Password" />
+                <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} className="input-email" placeholder="Phone number, user or email" />
+                <input type="password"value={password} onChange={(e) => setPassword(e.target.value)} className="input-password" placeholder="Password" />
                 <button
                 onClick={loginHandle}
                 type="submit"
