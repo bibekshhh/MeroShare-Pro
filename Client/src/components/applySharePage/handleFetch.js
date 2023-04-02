@@ -1,29 +1,22 @@
 import axios from "axios";
 
-const retryCount = 0;
-async function handleFetch(data, reqParam){
+async function handleFetch(data){
     try{
         let config = {
             method: 'post',
             maxBodyLength: Infinity,
-            url: 'http://localhost:9000/action/' + reqParam,
+            url: 'http://localhost:9000/action/profile',
             headers: { 
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
+              "authorization": "Bearer " + localStorage.getItem("token")
             },
             data : JSON.stringify(data)
         };
         
         const res = await axios.request(config);
-        console.log(`fetched: ${retryCount}`)
         return res.data
     } catch(error){
-        if (retryCount <= 3){
-            let retryFetch = setTimeout(() => {
-                handleFetch(data, reqParam)
-            }, 2000)
-
-            return () => clearTimeout(retryFetch)
-        }
+        console.log(error)
     }
 }
 

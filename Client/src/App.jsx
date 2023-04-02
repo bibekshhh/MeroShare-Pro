@@ -15,10 +15,16 @@ import Manage from './pages/manage/Manage.route';
 import Home from './pages/home/home.route';
 import PageNotFound from './pages/pageNotFound';
 
+import { QueryClient, QueryClientProvider } from 'react-query';
+
+// Create a client
+const queryClient = new QueryClient()
+
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   return (
     <>
+    <QueryClientProvider client={queryClient}>
       <div className="App">
         <div className='app-wrapper'>
           {
@@ -47,6 +53,7 @@ function App() {
         }
         </div>
       </div>
+    </QueryClientProvider>
     </>
   );
 }

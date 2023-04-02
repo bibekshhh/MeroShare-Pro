@@ -11,6 +11,7 @@ import { IconArrowRight, IconDelete } from '@arco-design/web-react/icon';
 import { useEffect, useState } from 'react';
 
 import axios from 'axios';
+import { useQuery } from 'react-query'
 
 import "../css/applyShare.css"
 
@@ -134,7 +135,7 @@ const paneStyle = {
     color: 'black',
 };
 
-const FetchData = ({data, ACCOUNTS_ARRAY, set_ACCOUNTS_ARRAY}) => {
+const FetchData = ({accountData, ACCOUNTS_ARRAY, set_ACCOUNTS_ARRAY}) => {
     const [loading, ] = useState(false);
         
     const [userProfile, setUserProfile] = useState({
@@ -224,32 +225,47 @@ const FetchData = ({data, ACCOUNTS_ARRAY, set_ACCOUNTS_ARRAY}) => {
         "totalCount": 0
     });
 
+    console.log(accountData)
 
-    // Memoize the fetch function using useMemo
-    useEffect(() => {
-        // Return the memoized fetch function
-         (async() => {
-            const availableIssues = await handleFetch(data, 'availableIssues');
-            const portfolio = await handleFetch(data, 'portfolio');
-            const user = await handleFetch(data, 'userinfo');
+    const { 
+        isLoading, 
+        isError, 
+        error, 
+        data: profileData 
+    } = useQuery(
+        'profile',
+         handleFetch(accountData),
+        {
+            staleTime: 10 * 60 * 1000, // block background fetches for 10 minutes
+            cacheTime: Infinity, // cache the result indefinitely
+            retry: 4, // Will retry failed requests 10 times before displaying an error
+            retryDelay: 4000, // Will always wait 1000ms to retry, regardless of how many retries
+        }
+    );
 
-            if (!availableIssues || !portfolio || !user || 'errorCode' in portfolio) return
-        
-            setAvailableShares(availableIssues)
-            setPortfolioData(portfolio)
-            setUserProfile(user)
-        })()
-    }, [setUserProfile, setPortfolioData, setAvailableShares, data]);
+    if (isLoading) return
+    if (isError) console.log(error.message)
 
+    console.log(profileData)
+
+    const availableIssues = profileData.applicableIssues;
+    const portfolio = profileData.myPortfoilio;
+    const user = profileData.ownDetails;
+
+    if (!availableIssues || !portfolio || !user || 'errorCode' in portfolio) return
+
+    setAvailableShares(availableIssues)
+    setPortfolioData(portfolio)
+    setUserProfile(user)
     console.log({availableShares, userProfile, portfolioData})
 
     return(
         <>
         <div className="actions-section">
-            <div className="info">{data.name}</div>
+            <div className="info">{accountData.name}</div>
             <div className="actions">
                 <Space size='medium'>
-                    <UpdateAccountForm currentInfo={data} set_ACCOUNTS_ARRAY={set_ACCOUNTS_ARRAY} />
+                    <UpdateAccountForm currentInfo={accountData} set_ACCOUNTS_ARRAY={set_ACCOUNTS_ARRAY} />
                     <Button type='primary' status='danger' icon={<IconDelete />}>
                         Delete
                     </Button>
@@ -333,7 +349,7 @@ const ApplyShare = () => {
                         }>
                         <div style={paneStyle}>
                             <FetchData 
-                            data={x.content} 
+                            accountData={x.content} 
                             ACCOUNTS_ARRAY={ACCOUNTS_ARRAY}
                             set_ACCOUNTS_ARRAY={set_ACCOUNTS_ARRAY} />
                         </div>

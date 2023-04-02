@@ -11,6 +11,8 @@ const UpdateAccountForm = ({currentInfo, set_ACCOUNTS_ARRAY}) => {
     const [bankList, setBankList] = useState({})
     const [form] = Form.useForm();
 
+    console.log(currentInfo)
+
     function validateForm() {
         form.validate()
         .then(async (res) => {
@@ -37,14 +39,20 @@ const UpdateAccountForm = ({currentInfo, set_ACCOUNTS_ARRAY}) => {
                 Message.error("CRN must be 8 digit number")
             }
 
-            const addAccount = {name, boid, clientId, username, password, crnNumber};
+            const addAccount = {
+                data: {name, boid, clientId, username, password, crnNumber},
+                accountId: currentInfo._id
+            };
+            
             console.log(addAccount)
 
             const addAccountRes = await axios.request({
                 method: 'post',
                 maxBodyLength: Infinity,
                 url: 'http://localhost:9000/action/editAccount',
-                headers: { },
+                headers: {
+                    "authorization": "Bearer " + localStorage.getItem("token")
+                 },
                 data: addAccount
             })
 
