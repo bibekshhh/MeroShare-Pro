@@ -5,7 +5,7 @@ import "../../pages/css/home.css";
 
 const FormItem = Form.Item;
 
-const UpdateAccountForm = ({currentInfo, set_ACCOUNTS_ARRAY}) => {
+const UpdateAccountForm = ({currentInfo}) => {
     const [visible, setVisible] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [bankList, setBankList] = useState({})
@@ -25,6 +25,8 @@ const UpdateAccountForm = ({currentInfo, set_ACCOUNTS_ARRAY}) => {
 
             clientId = clientId.split(' ')[0].trim();
             crnNumber = crnNumber.toString();
+
+            setConfirmLoading(true)
 
             if (!name || !boid || !clientId || !username || !password || !crnNumber) {
                 setVisible(true)
@@ -47,41 +49,31 @@ const UpdateAccountForm = ({currentInfo, set_ACCOUNTS_ARRAY}) => {
             const addAccountRes = await axios.request({
                 method: 'post',
                 maxBodyLength: Infinity,
-                url: 'http://localhost:9000/action/editAccount',
+                url: 'http://localhost:9000/action/edit-account',
                 headers: {
                     "authorization": "Bearer " + localStorage.getItem("token")
                  },
                 data: addAccount
             })
 
-            if (addAccountRes.status === 201 ){
-                Notification.success({
-                    title: 'Success',
-                    content: 'Account added Successfully!',
-                  })
-                  
-                // update the main accounts list
-                set_ACCOUNTS_ARRAY(addAccount)
-                
-                form.resetFields()
-                setVisible(false);
-                setConfirmLoading(false);
-            }
+            if (addAccountRes.status === 201 ) return
+
+            Notification.success({
+                title: 'Success',
+                content: 'Account updated Successfully! Refresh page to see the changes.',
+            })
+            
+            form.resetFields()
+            setVisible(false);
+            setConfirmLoading(false);
+
+            return addAccount
         })
         .catch(() => { 
             setConfirmLoading(false);
             Message.error("All the fields are required")
         })
     }
-
-    form.setFieldsValue({
-        name: currentInfo.name,
-        boid: currentInfo.boid,
-        clientId: currentInfo.clientId,
-        username: currentInfo.username,
-        password: currentInfo.password,
-        crnNumber: currentInfo.crnNumber
-      });
 
     const formItemLayout = {
         labelCol: {
@@ -146,6 +138,14 @@ const UpdateAccountForm = ({currentInfo, set_ACCOUNTS_ARRAY}) => {
             <Form
             {...formItemLayout}
             form={form}
+            initialValues={{
+                name: currentInfo.name,
+                boid: currentInfo.boid,
+                clientId: currentInfo.clientId,
+                username: currentInfo.username,
+                password: currentInfo.password,
+                crnNumber: currentInfo.crnNumber
+            }}
             labelCol={{
                 style: { flexBasis: 95 },
             }}

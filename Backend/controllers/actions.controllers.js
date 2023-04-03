@@ -219,7 +219,9 @@ export async function editAccount(req, res) {
     }
     let { userId } = req.userData;
 
-    await User.updateOne({ _id: accountId, userId }, { ...data });
+    await Account.findByIdAndUpdate(accountId, data, {
+      new: true
+    });
 
     res.json({ success: true, message: "Account updated successfully." });
   } catch (error) {

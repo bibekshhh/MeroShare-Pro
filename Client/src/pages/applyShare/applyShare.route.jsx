@@ -195,7 +195,7 @@ const FetchData = ({accountData, ACCOUNTS_ARRAY, set_ACCOUNTS_ARRAY}) => {
             "totalValueAsOfPreviousClosingPrice": "7919.00",
             "totalValueOfLastTransPrice": 7761,
             "totalValueOfPrevClosingPrice": 7919
-        });
+    });
     const [availableShares, setAvailableShares] = useState({
         "object": [
             {
@@ -260,7 +260,7 @@ const FetchData = ({accountData, ACCOUNTS_ARRAY, set_ACCOUNTS_ARRAY}) => {
             <div className="info">{accountData.name}</div>
             <div className="actions">
                 <Space size='medium'>
-                    <UpdateAccountForm currentInfo={accountData} set_ACCOUNTS_ARRAY={set_ACCOUNTS_ARRAY} />
+                    <UpdateAccountForm currentInfo={accountData} />
                     <Button type='primary' status='danger' icon={<IconDelete />}>
                         Delete
                     </Button>
@@ -268,7 +268,7 @@ const FetchData = ({accountData, ACCOUNTS_ARRAY, set_ACCOUNTS_ARRAY}) => {
             </div>
         </div>
         {
-            (availableShares) && (
+            (availableShares && portfolioData && userProfile) && (
             <>
             <ApplyShareForAll applicableIssue={availableShares} accounts={ACCOUNTS_ARRAY}/>
             <Divider />
@@ -301,6 +301,7 @@ const ApplyShare = () => {
                   });
                   
                   const accounts = await res.data;
+                  console.log(accounts)
                   set_ACCOUNTS_ARRAY(accounts)
                   return accounts
             } catch (error){
