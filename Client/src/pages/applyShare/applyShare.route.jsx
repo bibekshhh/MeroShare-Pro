@@ -136,7 +136,6 @@ const paneStyle = {
 };
 
 const FetchData = ({accountData, ACCOUNTS_ARRAY, set_ACCOUNTS_ARRAY}) => {
-    const [loading, ] = useState(false);
         
     const [userProfile, setUserProfile] = useState({
         "address": "BIRATNAGAR-04-RAMJANAKI MARGA, BIRATNAGAR, MORANG, NEPAL",
@@ -225,39 +224,35 @@ const FetchData = ({accountData, ACCOUNTS_ARRAY, set_ACCOUNTS_ARRAY}) => {
         "totalCount": 0
     });
 
-    console.log(accountData)
-
     const { 
         isLoading, 
         isError, 
+        isSuccess,
         error, 
         data: profileData 
-    } = useQuery(
-        'profile',
-         handleFetch(accountData),
-        {
-            staleTime: 10 * 60 * 1000, // block background fetches for 10 minutes
-            cacheTime: Infinity, // cache the result indefinitely
-            retry: 4, // Will retry failed requests 10 times before displaying an error
-            retryDelay: 4000, // Will always wait 1000ms to retry, regardless of how many retries
-        }
-    );
+    } = useQuery(['profile', accountData], 
+    () => handleFetch(accountData),
+    {
+        staleTime: 10 * 60 * 1000, // block background fetches for 10 minutes
+        cacheTime: Infinity, // cache the result indefinitely
+        retry: 4, // Will retry failed requests 4 times before displaying an error
+        retryDelay: 1000, // Will always wait 4000ms to retry, regardless of how many retries
 
-    if (isLoading) return
+    })
+
+    if (isLoading) console.log("Loading..")
     if (isError) console.log(error.message)
 
-    console.log(profileData)
-
-    const availableIssues = profileData.applicableIssues;
-    const portfolio = profileData.myPortfoilio;
-    const user = profileData.ownDetails;
-
-    if (!availableIssues || !portfolio || !user || 'errorCode' in portfolio) return
-
-    setAvailableShares(availableIssues)
-    setPortfolioData(portfolio)
-    setUserProfile(user)
-    console.log({availableShares, userProfile, portfolioData})
+    useEffect(() => {
+        if (isSuccess && profileData) {
+            const { applicableIssues, myPortfoilio, ownDetails } = profileData;
+            if (applicableIssues && myPortfoilio && ownDetails && !myPortfoilio.errorCode) {
+              setAvailableShares(applicableIssues);
+              setPortfolioData(myPortfoilio);
+              setUserProfile(ownDetails);
+            }
+          }
+    }, [isSuccess, profileData])
 
     return(
         <>
@@ -273,19 +268,19 @@ const FetchData = ({accountData, ACCOUNTS_ARRAY, set_ACCOUNTS_ARRAY}) => {
             </div>
         </div>
         {
-            availableShares && (
+            (availableShares) && (
             <>
             <ApplyShareForAll applicableIssue={availableShares} accounts={ACCOUNTS_ARRAY}/>
             <Divider />
             <ApplySharesForIndividualAccount applicableIssue={availableShares}/>
             <Divider />
+            <PortfolioCards loading={false} data={portfolioData} />
+            <Divider />
+            <ApplyUserProfile userProfileData={userProfile} />
+            <Divider />
             </>
             )
         }
-        {portfolioData && <PortfolioCards loading={loading} data={portfolioData} />}
-        <Divider />
-        {userProfile && <ApplyUserProfile userProfileData={userProfile}/>}
-        <Divider />
         </>
     )
 }
@@ -300,14 +295,15 @@ const ApplyShare = () => {
                     method: 'get',
                     maxBodyLength: Infinity,
                     url: 'http://localhost:9000/action/all-accounts',
-                    headers: { }
+                    headers: {
+                        "Authorization": "Bearer " + localStorage.getItem("token")
+                     },
                   });
                   
                   const accounts = await res.data;
                   set_ACCOUNTS_ARRAY(accounts)
                   return accounts
             } catch (error){
-                console.log(error.message)
                 return []
             }
         })()

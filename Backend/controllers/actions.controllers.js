@@ -162,7 +162,6 @@ export async function getProfileData(req, res) {
       applicableIssues: applicableIssueParsedResponse,
     });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ status: false, error: error.message });
   }
 }

@@ -45,7 +45,7 @@ const AddUserForm = () => {
                 maxBodyLength: Infinity,
                 url: 'http://localhost:9000/action/add-account',
                 headers: { 
-                    "authorization": "Bearer " + localStorage.getItem("token")
+                    "Authorization": "Bearer " + localStorage.getItem("token")
                 },
                 data: addAccount
             })
@@ -82,7 +82,9 @@ const AddUserForm = () => {
                     method: 'get',
                     maxBodyLength: Infinity,
                     url: 'https://webbackend.cdsc.com.np/api/meroShare/capital/',
-                    headers: {},
+                    headers: {
+                        "Authorization": "Bearer " + localStorage.getItem("token")
+                    },
                 };
                 
                 const res = await axios.request(config);

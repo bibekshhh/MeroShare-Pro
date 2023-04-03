@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import LoginArt from './artt.svg'
 import "../css/login.css"
-import { Notification } from "@arco-design/web-react";
+import { Notification, Spin } from "@arco-design/web-react";
 
 import config from "../../config";
 
@@ -13,10 +13,16 @@ const Login = ({logStatus}) => {
     const [email , setEmail] = useState("");
     const [password, setPassword] = useState("");
 
+    const [loading, setLoading] = useState(false);
+
     const loginHandle = async (e) => {
         e.preventDefault();
 
+        setLoading(true)
+
         if(!email || !password) {
+           setLoading(false);
+
            return Notification.error({ 
             title: "Error",
             content: "All fields are required."
@@ -33,17 +39,19 @@ const Login = ({logStatus}) => {
 
         const data = await res.json();
 
-        if(data.success == false || data.error) {
+        if(data.success === false || data.error) {
+            setLoading(false);
             return Notification.error({
                 title: "Error",
                 content: data.error
             })
         }
 
+        setLoading(false);
         localStorage.setItem("token", data.token)
         logStatus.setLoggedIn(true)
 
-        navigate("/apply")
+        navigate("/")
     }
 
     return (
@@ -60,7 +68,9 @@ const Login = ({logStatus}) => {
                 <button
                 onClick={loginHandle}
                 type="submit"
-                className="submit-btn">Login</button>
+                className="submit-btn">
+                    <Spin delay={500} loading={loading} style={{color: "white", marginRight: 5}}>Login</Spin>
+                </button>
 
                 <div className="hr-container">
                     <hr className="or-hr" data-content="OR" />

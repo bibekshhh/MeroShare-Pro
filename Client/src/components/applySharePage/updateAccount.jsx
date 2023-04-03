@@ -11,8 +11,6 @@ const UpdateAccountForm = ({currentInfo, set_ACCOUNTS_ARRAY}) => {
     const [bankList, setBankList] = useState({})
     const [form] = Form.useForm();
 
-    console.log(currentInfo)
-
     function validateForm() {
         form.validate()
         .then(async (res) => {

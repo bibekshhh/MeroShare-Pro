@@ -17,7 +17,9 @@ const Manage = () => {
                     method: 'get',
                     maxBodyLength: Infinity,
                     url: 'http://localhost:9000/action/upcomingIPO',
-                    headers: {},
+                    headers: {
+                        "authorization": "Bearer " + localStorage.getItem("token")
+                    },
                 };
                 
                 const res = await axios.request(config);
