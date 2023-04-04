@@ -1,11 +1,12 @@
 import axios from "axios";
+import API_URL from '../../config';
 
 async function deleteAccount(boid){
     try{
         let config = {
             method: 'post',
             maxBodyLength: Infinity,
-            url: 'http://localhost:9000/action/delete-account',
+            url: `${API_URL}/action/delete-account`,
             headers: { 
               'Content-Type': 'application/json',
               'authorization': "Bearer " + localStorage.getItem("token")

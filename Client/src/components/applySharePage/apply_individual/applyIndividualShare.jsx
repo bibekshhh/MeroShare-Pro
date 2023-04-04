@@ -6,6 +6,8 @@ import { Steps, Divider } from '@arco-design/web-react';
 
 import { IconLeft } from '@arco-design/web-react/icon';
 
+import { QueryClient } from 'react-query';
+
 import "./applyIndividualShare.css"
 import ApplyIndividualForm from './applyForm';
 import ApplySuccess from '../applySuccess';
@@ -14,6 +16,8 @@ import applyIndividualHandle from './apply_IPO_handle';
 const Step = Steps.Step;
 
 const ApplySharesForIndividualAccount = ({currentInfo, applicableIssue}) => {
+  const queryClient = new QueryClient();
+
   const [current, setCurrent] = useState(1);
 
   const [visible, setVisible] = useState(false);
@@ -30,7 +34,7 @@ const ApplySharesForIndividualAccount = ({currentInfo, applicableIssue}) => {
   const applyShare = () => {
     form.validate()
     .then(async (formRes) => {
-
+      
       setCurrent(current + 1)
       setConfirmLoading(true);
 
@@ -40,6 +44,8 @@ const ApplySharesForIndividualAccount = ({currentInfo, applicableIssue}) => {
         title: 'Success',
         content: 'Applied Successfully!',
       })
+
+      queryClient.invalidateQueries('profile');
 
       setApplyData(applyIPO_Res)
       form.resetFields();

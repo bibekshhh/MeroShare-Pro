@@ -5,7 +5,7 @@ import LoginArt from './artt.svg'
 import "../css/login.css"
 import { Notification, Spin } from "@arco-design/web-react";
 
-import config from "../../config";
+import API_URL from '../../config';
 
 const Login = ({logStatus}) => {
     const navigate = useNavigate();
@@ -29,7 +29,7 @@ const Login = ({logStatus}) => {
            })
         }
 
-        const res = await fetch(`${config.API_URL}/auth/login`, {
+        const res = await fetch(`${API_URL}/auth/login`, {
             method: "POST",
             headers: {
                 "content-type": "application/json"

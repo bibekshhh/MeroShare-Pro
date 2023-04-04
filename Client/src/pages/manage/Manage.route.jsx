@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { Spin } from '@arco-design/web-react';
 import ListUpcomingIPOs from './ipoUpcoming';
 
+import API_URL from '../../config';
+
 //importing styles
 import "./manage.css"
 
@@ -16,7 +18,7 @@ const Manage = () => {
                 const config = {
                     method: 'get',
                     maxBodyLength: Infinity,
-                    url: 'http://localhost:9000/action/upcomingIPO',
+                    url: `${API_URL}/action/upcomingIPO`,
                     headers: {
                         "authorization": "Bearer " + localStorage.getItem("token")
                     },

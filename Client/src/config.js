@@ -1,4 +1,3 @@
-const API_URL = "http://localhost:9000";
+const API_URL = "https://merosharepro.onrender.com";
 
-// eslint-disable-next-line import/no-anonymous-default-export
-export default {API_URL}
+export default API_URL;

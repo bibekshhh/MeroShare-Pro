@@ -65,10 +65,9 @@ const ApplyIndividualForm = ({currentInfo, form, list}) => {
           </FormItem>
           <FormItem label='Quantity' field='quantity' rules={[{ required: true }]}>
             <InputNumber
-                min={0}
-                defaultValue={500}
+                min={10}
+                defaultValue={10}
                 suffix='Kitta'
-                step={10}
                 precision={0}
                 style={{ width: 200}}
             />

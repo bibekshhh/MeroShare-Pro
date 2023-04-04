@@ -1,4 +1,5 @@
 import axios from "axios";
+import API_URL from '../../config';
 
 async function handleFetch(data){
     console.log({clientId: data.clientId, username: data.username, password: data.password})
@@ -6,7 +7,7 @@ async function handleFetch(data){
         let config = {
             method: 'post',
             maxBodyLength: Infinity,
-            url: 'http://localhost:9000/action/profile',
+            url: `${API_URL}/action/profile`,
             headers: { 
               'Content-Type': 'application/json',
               'authorization': "Bearer " + localStorage.getItem("token")

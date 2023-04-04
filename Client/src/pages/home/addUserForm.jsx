@@ -4,6 +4,8 @@ import axios from 'axios';
 import "../css/home.css";
 import { QueryClient } from 'react-query';
 
+import API_URL from '../../config';
+
 const FormItem = Form.Item;
 
 
@@ -47,7 +49,7 @@ const AddUserForm = () => {
             const addAccountRes = await axios.request({
                 method: 'post',
                 maxBodyLength: Infinity,
-                url: 'http://localhost:9000/action/add-account',
+                url: `${API_URL}/action/add-account`,
                 headers: { 
                     "Authorization": "Bearer " + localStorage.getItem("token")
                 },
@@ -170,7 +172,10 @@ const AddUserForm = () => {
                     <Input placeholder='Enter Mero Share username' />
                 </FormItem>
                 <FormItem label='Password' field='password' rules={[{ type: 'string', required: true }]}>
-                    <Input placeholder='Enter Mero Share password' />
+                    <Input.Password
+                    defaultValue='password'
+                    defaultVisibility={false}
+                    placeholder='Enter Mero Share password' />
                 </FormItem>
                 <FormItem label='CRN' field='crnNumber' 
                 rules={[

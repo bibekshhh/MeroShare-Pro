@@ -1,11 +1,12 @@
 import axios from "axios";
+import API_URL from '../config'
 
 async function getAllAccounts(){
     try{
         let config = {
             method: 'get',
             maxBodyLength: Infinity,
-            url: 'http://localhost:9000/action/all-accounts',
+            url: `${API_URL}/action/all-accounts`,
             headers: { 
               'Content-Type': 'application/json',
               'authorization': "Bearer " + localStorage.getItem("token")

@@ -1,4 +1,5 @@
 import axios from 'axios'
+import API_URL from '../../../config';
 
 const applyIndividualHandle = async (data, currentInfo) => {
     let applyResponseData = {};
@@ -34,7 +35,7 @@ const applyIndividualHandle = async (data, currentInfo) => {
             let config = {
                 method: 'post',
                 maxBodyLength: Infinity,
-                url: 'http://localhost:9000/apply/single',
+                url: `${API_URL}/apply/single`,
                 headers: { },
                 data : reqApplyData
             
