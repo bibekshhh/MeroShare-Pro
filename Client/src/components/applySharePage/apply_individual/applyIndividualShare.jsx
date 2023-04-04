@@ -1,4 +1,4 @@
-import { Modal, Spin, Button, Form, Select, Notification, Message, InputNumber, Tag } from '@arco-design/web-react';
+import { Modal, Spin, Button, Form, Select, Notification, Message, InputNumber, Tag, Input } from '@arco-design/web-react';
 import { Checkbox, Space, Typography } from '@arco-design/web-react';
 
 import { useState } from 'react';
@@ -7,7 +7,7 @@ import "./applyIndividualShare.css"
 const FormItem = Form.Item;
 const Option = Select.Option;
 
-const ApplySharesForIndividualAccount = ({applicableIssue}) => {
+const ApplySharesForIndividualAccount = ({currentInfo, applicableIssue}) => {
   const [visible, setVisible] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [form] = Form.useForm();
@@ -123,6 +123,10 @@ const ApplySharesForIndividualAccount = ({applicableIssue}) => {
           wrapperCol={{
             style: { flexBasis: 'calc(100% - 90px)' },
           }}>
+
+          <FormItem label='Account' initialValue={currentInfo.boid} disabled field='account' rules={[{ required: true }]}>
+            <Input placeholder='please enter your username...' />
+          </FormItem>
 
           <FormItem label='Share' field='share' rules={[{ required: true }]}>
             <Select

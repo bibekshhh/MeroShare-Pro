@@ -2,10 +2,14 @@ import { Modal, Spin, Button, Form, Input, Select, Message, Notification } from 
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import "../css/home.css";
+import { QueryClient } from 'react-query';
 
 const FormItem = Form.Item;
 
+
 const AddUserForm = () => {
+    const queryClient = new QueryClient();
+
     const [visible, setVisible] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [bankList, setBankList] = useState({})
@@ -26,15 +30,15 @@ const AddUserForm = () => {
             clientId = clientId.split(' ')[0].trim();
             crnNumber = crnNumber.toString();
 
+            if (!Number.isInteger(parseInt(crnNumber))){
+                setVisible(true)
+                Message.error("CRN must be 8 digit number")
+            }
+
             if (!name || !boid || !clientId || !username || !password || !crnNumber) {
                 setVisible(true)
                 setConfirmLoading(false);
                 Message.error("Please enter all the fields")
-            }
-            
-            if (!Number.isInteger(parseInt(crnNumber))){
-                setVisible(true)
-                Message.error("CRN must be 8 digit number")
             }
 
             const addAccount = {name, boid, clientId, username, password, crnNumber};
@@ -51,6 +55,8 @@ const AddUserForm = () => {
             })
 
             if (addAccountRes.status === 201 ){
+                queryClient.invalidateQueries('allAccounts');
+
                 Notification.success({
                     title: 'Success',
                     content: 'Account added Successfully!',

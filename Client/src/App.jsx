@@ -8,7 +8,7 @@ import "bootstrap/dist/css/bootstrap.min.css"
 
 //importing pages
 import ApplyShare from './pages/applyShare/applyShare.route';
-import Sidebar from './components/Sidebar';
+import Sidebar from './components/sidebar/Sidebar';
 import CheckResult from './pages/checkResult.route';
 import Login from './pages/login/login.route';
 import Manage from './pages/manage/Manage.route';
@@ -19,7 +19,13 @@ import { useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 // Create a client
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: Infinity,
+    },
+  },
+})
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -27,16 +33,15 @@ function App() {
   useEffect(() => {
     const token = localStorage.getItem("token");
 
-  if(!token) {
-    setLoggedIn(false)
-  } else {
-    setLoggedIn(true)
-  }
+    if(!token){
+      setLoggedIn(false)
+    } else {
+      setLoggedIn(true)
+    }
   }, [loggedIn])
 
   return (
     <>
-    <QueryClientProvider client={queryClient}>
       <div className="App">
         <div className='app-wrapper'>
           {
@@ -44,6 +49,7 @@ function App() {
             <BrowserRouter>
             <Sidebar />
             <Outlet />
+            <QueryClientProvider client={queryClient}>
             <div className='main'>
                   <Routes>
                     <Route path='/' element={<Home />} />
@@ -52,6 +58,7 @@ function App() {
                     <Route path='/manage' element={<Manage />} />
                   </Routes>
             </div>
+            </QueryClientProvider>
           </BrowserRouter>
           : 
             <BrowserRouter>
@@ -65,7 +72,6 @@ function App() {
         }
         </div>
       </div>
-    </QueryClientProvider>
     </>
   );
 }

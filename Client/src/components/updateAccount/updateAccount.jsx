@@ -2,10 +2,13 @@ import { Modal, Spin, Button, Form, Input, Select, Message, Notification } from 
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import "../../pages/css/home.css";
+import { useQueryClient } from 'react-query';
 
 const FormItem = Form.Item;
 
 const UpdateAccountForm = ({currentInfo}) => {
+    const queryClient = useQueryClient();
+
     const [visible, setVisible] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [bankList, setBankList] = useState({})
@@ -60,10 +63,13 @@ const UpdateAccountForm = ({currentInfo}) => {
 
             Notification.success({
                 title: 'Success',
-                content: 'Account updated Successfully! Refresh page to see the changes.',
+                content: 'Account updated Successfully!',
             })
-            
+
             form.resetFields()
+            
+            queryClient.invalidateQueries('allAccounts');            
+            
             setVisible(false);
             setConfirmLoading(false);
 

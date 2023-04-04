@@ -69,7 +69,8 @@ const Login = ({logStatus}) => {
                 onClick={loginHandle}
                 type="submit"
                 className="submit-btn">
-                    <Spin delay={500} loading={loading} style={{color: "white", marginRight: 5}}>Login</Spin>
+                    <Spin delay={500} loading={loading} style={{color: "white", marginRight: 5}}></Spin>
+                    Login
                 </button>
 
                 <div className="hr-container">

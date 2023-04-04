@@ -4,13 +4,11 @@ import {
     Typography, 
     Space, 
     Tabs,
-    Button,
     Divider
 } from '@arco-design/web-react';
-import { IconArrowRight, IconDelete } from '@arco-design/web-react/icon';
+import { IconArrowRight } from '@arco-design/web-react/icon';
 import { useEffect, useState } from 'react';
 
-import axios from 'axios';
 import { useQuery } from 'react-query'
 
 import "../css/applyShare.css"
@@ -19,76 +17,10 @@ import ApplyUserProfile from '../../components/applySharePage/userProfile';
 import ApplySharesForIndividualAccount from "../../components/applySharePage/apply_individual/applyIndividualShare"
 import PortfolioCards from '../../components/applySharePage/portfolioCards';
 import ApplyShareForAll from '../../components/applySharePage/apply_global/applyShareForAll';
-import UpdateAccountForm from '../../components/applySharePage/updateAccount';
-import handleFetch from '../../components/applySharePage/handleFetch.js';
-
-
-// const ACCOUNTS_ARRAY = [
-//     {
-//         "name": "Bibek",
-//         "BOID": "1301720000552121",
-//         "clientId": "130",
-//         "username": "552121",
-//         "password": "Shyam1104#",
-//         "crn": "123456"
-//     },
-//     {
-//         "name": "Rimita",
-//         "BOID": "1301720000552121",
-//         "clientId": "130",
-//         "username": "552121",
-//         "password": "Bibek123",
-//         "crn": "123456"
-//     },
-//     {
-//         "name": "Shyam",
-//         "BOID": "1301720000552121",
-//         "clientId": "130",
-//         "username": "552121",
-//         "password": "Bibek123",
-//         "crn": "123456"
-//     },
-//     {
-//         "name": "Rambha",
-//         "BOID": "1301720000552121",
-//         "clientId": "130",
-//         "username": "552121",
-//         "password": "Bibek123",
-//         "crn": "123456"
-//     },
-//     {
-//         "name": "Jageshwar",
-//         "BOID": "1301720000552121",
-//         "clientId": "130",
-//         "username": "552121",
-//         "password": "Bibek123",
-//         "crn": "123456"
-//     },
-//     {
-//         "name": "Kirti",
-//         "BOID": "1301720000552121",
-//         "clientId": "130",
-//         "username": "552121",
-//         "password": "Bibek123",
-//         "crn": "123456"
-//     },
-//     {
-//         "name": "Surendra",
-//         "BOID": "1301720000552121",
-//         "clientId": "130",
-//         "username": "552121",
-//         "password": "Bibek123",
-//         "crn": "123456"
-//     },
-//     {
-//         "name": "Faugni Shah",
-//         "BOID": "1301720000552121",
-//         "clientId": "130",
-//         "username": "552121",
-//         "password": "Bibek123",
-//         "crn": "123456"
-//     }
-// ];
+import UpdateAccountForm from '../../components/updateAccount/updateAccount';
+import handleFetch from '../../components/updateAccount/updateAccHandle.js';
+import getAllAccounts from '../../components/getAllAccounts';
+import DeleteAccount from '../../components/deleteAccount/deleteAccount';
 
 const Content = ({ user }) => {
     return (
@@ -135,7 +67,7 @@ const paneStyle = {
     color: 'black',
 };
 
-const FetchData = ({accountData, ACCOUNTS_ARRAY, set_ACCOUNTS_ARRAY}) => {
+const FetchData = ({accountData, ACCOUNTS_ARRAY}) => {
         
     const [userProfile, setUserProfile] = useState({
         "address": "BIRATNAGAR-04-RAMJANAKI MARGA, BIRATNAGAR, MORANG, NEPAL",
@@ -261,9 +193,7 @@ const FetchData = ({accountData, ACCOUNTS_ARRAY, set_ACCOUNTS_ARRAY}) => {
             <div className="actions">
                 <Space size='medium'>
                     <UpdateAccountForm currentInfo={accountData} />
-                    <Button type='primary' status='danger' icon={<IconDelete />}>
-                        Delete
-                    </Button>
+                    <DeleteAccount currentInfo={accountData} />
                 </Space>
             </div>
         </div>
@@ -272,7 +202,7 @@ const FetchData = ({accountData, ACCOUNTS_ARRAY, set_ACCOUNTS_ARRAY}) => {
             <>
             <ApplyShareForAll applicableIssue={availableShares} accounts={ACCOUNTS_ARRAY}/>
             <Divider />
-            <ApplySharesForIndividualAccount applicableIssue={availableShares}/>
+            <ApplySharesForIndividualAccount currentInfo={accountData} applicableIssue={availableShares}/>
             <Divider />
             <PortfolioCards loading={false} data={portfolioData} />
             <Divider />
@@ -288,27 +218,25 @@ const FetchData = ({accountData, ACCOUNTS_ARRAY, set_ACCOUNTS_ARRAY}) => {
 const ApplyShare = () => {
     const [ACCOUNTS_ARRAY, set_ACCOUNTS_ARRAY] = useState([]);
 
+    const {isLoading, data: allAccounts, isSuccess} = useQuery(
+        "allAccounts",
+        () => getAllAccounts(),
+        {
+            staleTime: 10 * 60 * 1000, // block background fetches for 10 minutes
+            cacheTime: Infinity, // cache the result indefinitely
+            retry: 4, // Will retry failed requests 4 times before displaying an error
+            retryDelay: 1000, // Will always wait 4000ms to retry, regardless of how many retries
+    
+        }
+    )
+
+    if (isLoading) console.log("Loading..")
+
     useEffect(() => {
-        (async() => {
-            try{
-                const res = await axios({
-                    method: 'get',
-                    maxBodyLength: Infinity,
-                    url: 'http://localhost:9000/action/all-accounts',
-                    headers: {
-                        "Authorization": "Bearer " + localStorage.getItem("token")
-                     },
-                  });
-                  
-                  const accounts = await res.data;
-                  console.log(accounts)
-                  set_ACCOUNTS_ARRAY(accounts)
-                  return accounts
-            } catch (error){
-                return []
-            }
-        })()
-    },[set_ACCOUNTS_ARRAY]);
+        if (isSuccess && allAccounts) {
+            set_ACCOUNTS_ARRAY(allAccounts)
+          }
+    }, [isSuccess, allAccounts])
 
     console.log(ACCOUNTS_ARRAY)
     
@@ -317,7 +245,8 @@ const ApplyShare = () => {
         <label htmlFor="#" className="content-header">Apply Share</label>
         <Tabs defaultActiveTab='key1' direction={"vertical"} style={{ height: '100%', width: '100%', }}>
             {
-                ACCOUNTS_ARRAY
+                ACCOUNTS_ARRAY && (
+                    ACCOUNTS_ARRAY
                     .map((data, index) => ({
                         title: 
                             <Card
@@ -347,11 +276,11 @@ const ApplyShare = () => {
                         <div style={paneStyle}>
                             <FetchData 
                             accountData={x.content} 
-                            ACCOUNTS_ARRAY={ACCOUNTS_ARRAY}
-                            set_ACCOUNTS_ARRAY={set_ACCOUNTS_ARRAY} />
+                            ACCOUNTS_ARRAY={ACCOUNTS_ARRAY} />
                         </div>
                         </TabPane>
                     ))
+                )
             }
         </Tabs>
         </div>
