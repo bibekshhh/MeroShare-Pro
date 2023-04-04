@@ -31,7 +31,28 @@ export default async function applyIPO(
     const myDetails = await getMyDetails(token, demat);
     const rawBankId = await getBankId(token);
 
-    bankId = rawBankId[0].id;
+    bankId = rawBankId[0] ? rawBankId[0].id : undefined;
+
+    let count = 0;
+    while (!bankId) {
+      // Wait for 2.5 seconds before retrying
+      await new Promise((resolve) => setTimeout(resolve, 2500));
+
+      ownDetails = await getOwnDetails(token);
+      demat = ownDetails.demat;
+      myDetails = await getMyDetails(token, demat);
+      
+      let rawBankId;
+      try {
+        rawBankId = await getBankId(token);
+      } catch (error) {
+        console.error(error);
+      }
+      
+      count++;
+      console.log(`Attempt ${count}:`, rawBankId);
+      bankId = rawBankId[0] ? rawBankId[0].id : undefined;
+    }
 
     const rawCustomerId = await getCustomerId(token, bankId);
     customerId = rawCustomerId.id;

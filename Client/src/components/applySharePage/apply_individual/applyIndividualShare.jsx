@@ -1,16 +1,26 @@
-import { Modal, Spin, Button, Form, Select, Notification, Message, InputNumber, Tag, Input } from '@arco-design/web-react';
+import { Modal, Button, Form, Notification, Message } from '@arco-design/web-react';
 import { Checkbox, Space, Typography } from '@arco-design/web-react';
 
 import { useState } from 'react';
-import "./applyIndividualShare.css"
+import { Steps, Divider } from '@arco-design/web-react';
 
-const FormItem = Form.Item;
-const Option = Select.Option;
+import { IconLeft } from '@arco-design/web-react/icon';
+
+import "./applyIndividualShare.css"
+import ApplyIndividualForm from './applyForm';
+import ApplySuccess from '../applySuccess';
+import applyIndividualHandle from './apply_IPO_handle';
+
+const Step = Steps.Step;
 
 const ApplySharesForIndividualAccount = ({currentInfo, applicableIssue}) => {
+  const [current, setCurrent] = useState(1);
+
   const [visible, setVisible] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [form] = Form.useForm();
+
+  const [applyData, setApplyData] = useState({})
 
   const list = (applicableIssue.object).filter((issue) => {
     const hasActionKey = (Object.keys(issue)).includes("action");
@@ -19,30 +29,44 @@ const ApplySharesForIndividualAccount = ({currentInfo, applicableIssue}) => {
 
   const applyShare = () => {
     form.validate()
-    .then((res) => {
-      setConfirmLoading(true)
-      setTimeout(() => {
-        form.resetFields();
-        Notification.success({
-          title: 'Success',
-          content: 'Applied Successfully!',
-        })
-        console.log(res)
-        setVisible(false);
-        setConfirmLoading(false);
-      }, 3500);
+    .then(async (formRes) => {
+
+      setCurrent(current + 1)
+      setConfirmLoading(true);
+
+      const applyIPO_Res = await applyIndividualHandle(formRes, currentInfo);
+
+      Notification.success({
+        title: 'Success',
+        content: 'Applied Successfully!',
+      })
+
+      setApplyData(applyIPO_Res)
+      form.resetFields();
+      setConfirmLoading(false);
     })
     .catch(() => Message.error("All the fields are required"))
   }
 
-  const formItemLayout = {
-    labelCol: {
-      span: 4,
-    },
-    wrapperCol: {
-      span: 20,
-    },
-  };
+  function renderContent(step) {
+    return (
+      <div
+        style={{
+          width: '450px',
+          paddingRight: '10px',
+          height: 272,
+          background: 'var(--color-bg-2)',
+          color: '#C2C7CC',
+        }}>
+        
+        {
+          step === 1? 
+          <ApplyIndividualForm form={form} currentInfo={currentInfo} list={list}/>
+          : <ApplySuccess applyData={applyData} />
+        }
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -91,97 +115,59 @@ const ApplySharesForIndividualAccount = ({currentInfo, applicableIssue}) => {
         Apply Share
       </Button>
       <Modal
-        title='Apply Share'
+        title={`Apply Share for ${currentInfo.name}`}
         visible={visible}
-        style={{width: '500px'}}
+        style={{width: '700px'}}
         footer={
-            <>
-              <Button
-                onClick={() => {
-                  form.resetFields();
-                  setVisible(false);
-                }}>
-                Cancel
-              </Button>
-              <Button
-                loading={confirmLoading}
-                onClick={applyShare}
-                type='primary'>
-                Apply
-              </Button>
-            </>
-          }
-        confirmLoading={confirmLoading}
-        onCancel={() => setVisible(false)}>
-        <Spin delay={500} size={30} tip='This may take a while...' loading={confirmLoading}>
-        <Form
-          {...formItemLayout}
-          form={form}
-          labelCol={{
-            style: { flexBasis: 90 },
-          }}
-          wrapperCol={{
-            style: { flexBasis: 'calc(100% - 90px)' },
-          }}>
-
-          <FormItem label='Account' initialValue={currentInfo.boid} disabled field='account' rules={[{ required: true }]}>
-            <Input placeholder='please enter your username...' />
-          </FormItem>
-
-          <FormItem label='Share' field='share' rules={[{ required: true }]}>
-            <Select
-            mode='multiple'
-            placeholder='Please select'
-            style={{ width: '100%' }}
-            defaultValue={[]}
-            allowClear
-            renderTag={({ label, value, closable, onClose }, index, valueList) => {
-                const tagCount = valueList.length;
-
-                if (tagCount > 2) {
-                    return index === 0 ? (
-                    <span style={{ marginLeft: 8 }}>{`${tagCount} shares selected`}</span>
-                    ) : null;
+          <>
+            <Button
+              type='secondary'
+              disabled={current <= 2}
+              onClick={() => setCurrent(current - 1)}
+              style={{ paddingLeft: 8 }}>
+              <IconLeft />
+              Back
+            </Button>
+            <Button
+              disabled={current === 2}
+              onClick={() => applyShare()}
+              loading={confirmLoading}
+              type='primary'>
+                {
+                  confirmLoading === true ? "Applying" : "Apply"
                 }
-
-                return (
-                    <Tag
-                    color='arcoblue'
-                    closable={closable}
-                    onClose={onClose}
-                    style={{ margin: '2px 6px 2px 0' }}
-                    >
-                    {label}
-                    </Tag>
-                );
-                }}>
-
-                {(list).map((option) => (
-                <Option key={option.scrip + option.companyShareId} value={option.companyShareId}>
-                    {option.scrip + " - " + option.shareGroupName}
-                </Option>
-                ))}
-            </Select>
-          </FormItem>
-          <FormItem label='Quantity' field='quantity' rules={[{ required: true }]}>
-            <InputNumber
-                min={0}
-                defaultValue={500}
-                suffix='Kitta'
-                step={10}
-                precision={0}
-                style={{ width: 200}}
-            />
-          </FormItem>
-          <FormItem label='PIN' required field='t_pin' rules={[{ required: true }]}>
-            <InputNumber
-                max={999999}
-                precision={0}
-                style={{ width: 160, }}
-                />
-          </FormItem>
-        </Form>
-        </Spin>
+            </Button>
+          </>
+      }
+      confirmLoading={confirmLoading}
+      onCancel={() => {
+        if (confirmLoading === false){
+          setCurrent(1)
+          setVisible(false)
+        }
+      }}>
+        <div
+        style={{
+            display: 'flex',
+            maxWidth: 780,
+            padding: 0,
+            background: 'var(--color-bg-2)'
+          }} >
+          <div
+            style={{
+              background: 'var(--color-bg-2)',
+              padding: '10px 15px',
+              height: 272,
+              boxSizing: 'border-box',
+            }}>
+            <Steps direction='vertical' current={current} style={{ width: 170 }}>
+              <Step title='Succeeded' description='This is a description' />
+              <Step title='Processing' description='This is a description' />
+            </Steps>
+          </div>
+          <Divider type='vertical' style={{ display: 'block', height: 'auto', margin: '0 20px 0 15px', background: 'white' }}/>
+          {renderContent(current)}
+        </div>
       </Modal>
     </div>
   );

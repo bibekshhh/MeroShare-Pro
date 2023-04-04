@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Steps, Button, Divider, Typography } from '@arco-design/web-react';
+import { Steps, Button, Divider, Typography, Notification } from '@arco-design/web-react';
 import { IconLeft } from '@arco-design/web-react/icon';
 
 import { Modal, Form, Message } from '@arco-design/web-react';
@@ -14,8 +14,6 @@ const ApplyShareForAll = ({applicableIssue, accounts}) => {
   const [current, setCurrent] = useState(1);
   const [visible, setVisible] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [, setFormValidated] = useState(false);
-  const [shareApplied, setShareApplied] = useState(false)
   const [form] = Form.useForm();
 
   const list = (applicableIssue.object).filter((issue) => {
@@ -28,36 +26,25 @@ const ApplyShareForAll = ({applicableIssue, accounts}) => {
   const applyShare = () => {
     form.validate()
         .then((res) => {
-          setFormValidated(true)
-          setConfirmLoading(true)
-        })
-        .then(() => {
-          setShareApplied(true)
-          setConfirmLoading(false);
+          setTimeout(() => {
+            form.resetFields();
+            Notification.success({
+              title: 'Success',
+              content: 'Applied Successfully!',
+            })
+            console.log(res)
+    
+            // after apply button clicked
+            form.resetFields();
+            setConfirmLoading(false);
+          }, 5500);
+    
           setCurrent(current + 1)
-
-          // console.log(form.getFieldsValue(["Accounts", "share", "quantity", "t_pin"]))
-
-          const {Accounts, share, quantity, t_pin} = form.getFieldsValue(["Accounts", "share", "quantity", "t_pin"]);
-          const parsedAccounts = Accounts.map(JSON.parse);
-          console.log({parsedAccounts, share, quantity, t_pin})
-          // hit the apply share endpoint here
-          setTimeout(() => form.resetFields(), 1000)
-          Message.success('Success !');
+          setConfirmLoading(true);
         })
         .catch(() => {
-          setFormValidated(false)
           Message.error("All the fields are required!")
         });
-  }
-
-  const handleModalClose = () => {
-    form.resetFields();
-    setCurrent(1)
-    setVisible(false)
-    setFormValidated(false)
-    setShareApplied(false)
-    setConfirmLoading(false);
   }
 
   function renderContent(step) {
@@ -89,39 +76,39 @@ const ApplyShareForAll = ({applicableIssue, accounts}) => {
       </Button>
     </div>
     <Modal
-      title='Apply Share'
+      title='Apply Share for multiple Accounts'
       visible={visible}
       style={{width: 'max-content'}}
       footer={
           <>
             <Button
-            type='secondary'
-            disabled={current <= 1}
-            onClick={() => setCurrent(current - 1)}
-            style={{ paddingLeft: 8 }}>
-            <IconLeft />
-            Back
+              type='secondary'
+              disabled={current <= 2}
+              onClick={() => setCurrent(current - 1)}
+              style={{ paddingLeft: 8 }}>
+              <IconLeft />
+              Back
             </Button>
-            {
-              !shareApplied?
-              <Button
-              disabled={current >= 2}
+            <Button
+              disabled={current === 2}
               onClick={() => {
                 applyShare()
               }}
+              loading={confirmLoading}
               type='primary'>
-              Apply
+              {
+                confirmLoading === true ? "Applying" : "Apply"
+              }
             </Button>
-            : <Button
-              onClick={handleModalClose}
-              type='primary'>
-                Ok
-              </Button>
-            }
           </>
-        }
+      }
       confirmLoading={confirmLoading}
-      onCancel={() => setVisible(false)}>
+      onCancel={() => {
+        if (confirmLoading === false){
+          setCurrent(1)
+          setVisible(false)
+        }
+      }}>
         <div
         style={{
             display: 'flex',
