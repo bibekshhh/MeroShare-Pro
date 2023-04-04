@@ -25,16 +25,16 @@ export default async function applyIPO(
       accountBranchId,
       bankId;
 
-    const ownDetails = await getOwnDetails(token);
+    let ownDetails = await getOwnDetails(token);
     demat = ownDetails.demat;
 
-    const myDetails = await getMyDetails(token, demat);
+    let myDetails = await getMyDetails(token, demat);
     const rawBankId = await getBankId(token);
 
     bankId = rawBankId[0] ? rawBankId[0].id : undefined;
 
-    let count = 0;
-    while (!bankId) {
+    const startTime = Date.now();
+    while (!bankId && (Date.now() - startTime) < 10000) {
       // Wait for 2.5 seconds before retrying
       await new Promise((resolve) => setTimeout(resolve, 2500));
 
@@ -48,9 +48,7 @@ export default async function applyIPO(
       } catch (error) {
         console.error(error);
       }
-      
-      count++;
-      console.log(`Attempt ${count}:`, rawBankId);
+
       bankId = rawBankId[0] ? rawBankId[0].id : undefined;
     }
 
@@ -102,7 +100,7 @@ export default async function applyIPO(
       };
     }
 
-    return { success: true };
+    return { success: true, data: {appliedKitta, companyShareId}};
   } catch (error) {
     console.log(error);
     return { success: false, error: error.message };

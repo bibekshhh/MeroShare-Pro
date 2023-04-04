@@ -161,8 +161,8 @@ const ApplySharesForIndividualAccount = ({currentInfo, applicableIssue}) => {
               boxSizing: 'border-box',
             }}>
             <Steps direction='vertical' current={current} style={{ width: 170 }}>
-              <Step title='Succeeded' description='This is a description' />
-              <Step title='Processing' description='This is a description' />
+              <Step title='Details' description='Fill in the details' />
+              <Step title='Processing' description='' />
             </Steps>
           </div>
           <Divider type='vertical' style={{ display: 'block', height: 'auto', margin: '0 20px 0 15px', background: 'white' }}/>
