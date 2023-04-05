@@ -10,6 +10,8 @@ import {
 
 import fetch from "node-fetch";
 
+let shareDetails;
+
 export default async function applyIPO(
   token,
   transactionPin,
@@ -84,7 +86,7 @@ export default async function applyIPO(
     );
 
     const data = await res2.json();
-
+    
     if (res2.status == 409) {
       return {
         success: false,
@@ -100,9 +102,13 @@ export default async function applyIPO(
       };
     }
 
-    return { success: true, data: {appliedKitta, companyShareId}};
+    console.log(data)
+    shareDetails = await getShareDetails(token, companyShareId)
+
+    return { success: true, data: {appliedKitta, companyShareId, demat, boid, shareDetails}};
+      
   } catch (error) {
     console.log(error);
-    return { success: false, error: error.message };
+    return { success: false, error: error.message, data: shareDetails };
   }
 }

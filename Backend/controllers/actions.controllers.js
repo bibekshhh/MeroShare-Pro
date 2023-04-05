@@ -252,3 +252,30 @@ export async function deleteAccount(req, res) {
     res.status(500).json({ status: false, error: error.message });
   }
 }
+
+export async function getShareDetails(req, res) {
+  try {
+      const { shareId, clientId, username, password } = req.body;
+
+      if (!clientId || !username || !password) {
+        return res
+          .status(400)
+          .json({ success: false, error: "All fields are required." });
+      }
+  
+      const token = await getAuthToken(clientId, username, password);
+      
+      const res = await fetch("https://webbackend.cdsc.com.np/api/meroShare/active/" + shareId, {
+          method: "GET",
+          headers: {
+              "authorization": token
+          }
+      });
+
+      const data = await res.json();
+      res.status(200).json({status: true, data: data})
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ status: false, error: error.message });
+    }
+}

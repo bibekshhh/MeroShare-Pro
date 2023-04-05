@@ -1,7 +1,7 @@
 import { Alert, Grid } from '@arco-design/web-react';
 const { Col } = Grid;
 
-const ApplySuccess = ({ applyData }) => {
+const ApplySuccess = ({ applyData, currentInfo }) => {
     console.log("applyData: ", applyData);
   
     if (!applyData || Object.keys(applyData).length === 0) {
@@ -14,7 +14,7 @@ const ApplySuccess = ({ applyData }) => {
     return (
       <>
         <Col span={12} style={{width: '100%'}}>
-          {Object.values(applyData).map((item, index) => {
+          {Object.entries(applyData).map(([key, item], index) => {
             const alertType = item.success ? "success" : "error";
             const alertContent = item.success
               ? `Applied ${item.data?.appliedKitta} kitta`
@@ -25,7 +25,7 @@ const ApplySuccess = ({ applyData }) => {
                 key={index}
                 style={{ marginBottom: 10, width: '100%' }}
                 type={alertType}
-                title={item.success ? "Success" : "Failed"}
+                title={`${key.substring(key.indexOf(" ") + 1)} · ${item.success ? "Success" : "Failed"}`}
                 content={alertContent}
               />
             );

@@ -31,16 +31,16 @@ export async function SingleApplyIPO(req, res) {
         .json({ succcess: false, error: "All fields are required." });
     }
 
-    const token = await getAuthToken(clientId, username, password);
-    const applyIPOResponse = await applyIPO(
+    let token = await getAuthToken(clientId, username, password);
+    let applyIPOResponse = await applyIPO(
       token,
       transactionPin,
       crnNumber,
       appliedKitta,
       companyShareId
     );
-
-    if( applyIPOResponse.error || applyIPOResponse.status == false ) {
+    
+    if (applyIPOResponse.error || applyIPOResponse.status == false ) {
         return res.json({ success: false, error: applyIPOResponse.error })
     }
 

@@ -29,7 +29,7 @@ const applyIndividualHandle = async (data, currentInfo) => {
                 transactionPin: transactionPin.toString(),
                 crnNumber,
                 appliedKitta: appliedKitta.toString(),
-                companyShareId: companyShareId.toString()
+                companyShareId: (companyShareId.match(/^\d+/)).toString()
             };
 
             let config = {

@@ -34,7 +34,7 @@ const ApplySharesForIndividualAccount = ({currentInfo, applicableIssue}) => {
   const applyShare = () => {
     form.validate()
     .then(async (formRes) => {
-      
+
       setCurrent(current + 1)
       setConfirmLoading(true);
 
@@ -68,7 +68,7 @@ const ApplySharesForIndividualAccount = ({currentInfo, applicableIssue}) => {
         {
           step === 1? 
           <ApplyIndividualForm form={form} currentInfo={currentInfo} list={list}/>
-          : <ApplySuccess applyData={applyData} />
+          : <ApplySuccess applyData={applyData} currentInfo={currentInfo}/>
         }
       </div>
     );

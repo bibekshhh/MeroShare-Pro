@@ -57,7 +57,7 @@ const ApplyIndividualForm = ({currentInfo, form, list}) => {
                 }}>
 
                 {(list).map((option) => (
-                <Option key={option.scrip + option.companyShareId} value={option.companyShareId}>
+                <Option key={option.scrip + option.companyShareId} value={`${option.companyShareId} ${option.companyName}`}>
                     {option.scrip + " - " + option.shareGroupName}
                 </Option>
                 ))}
