@@ -2,7 +2,7 @@ import { Modal, Spin, Button, Form, Input, Select, Message, Notification } from 
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import "../css/home.css";
-import { QueryClient } from 'react-query';
+import { useQueryClient } from 'react-query';
 
 import API_URL from '../../config';
 
@@ -10,7 +10,7 @@ const FormItem = Form.Item;
 
 
 const AddUserForm = () => {
-    const queryClient = new QueryClient();
+    const queryClient = useQueryClient();
 
     const [visible, setVisible] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
@@ -32,11 +32,6 @@ const AddUserForm = () => {
             clientId = clientId.split(' ')[0].trim();
             crnNumber = crnNumber.toString();
 
-            if (!Number.isInteger(parseInt(crnNumber))){
-                setVisible(true)
-                Message.error("CRN must be 8 digit number")
-            }
-
             if (!name || !boid || !clientId || !username || !password || !crnNumber) {
                 setVisible(true)
                 setConfirmLoading(false);
@@ -56,21 +51,33 @@ const AddUserForm = () => {
                 data: addAccount
             })
 
-            if (addAccountRes.status === 201 ){
+            if (addAccountRes.status === 201 && addAccount.data.success === true ){
                 queryClient.invalidateQueries('allAccounts');
+                queryClient.refetchQueries('allAccounts')
 
                 Notification.success({
                     title: 'Success',
                     content: 'Account added Successfully!',
-                  })
+                })
                 form.resetFields()
                 setVisible(false);
                 setConfirmLoading(false);
             }
         })
-        .catch(() => { 
+        .catch((error) => { 
+            if (error.response && error.response.status === 409) {
+                Notification.warning({
+                    title: 'Warning',
+                    content: 'Account with that BOID already exists!',
+                })
+            } else {
+                Notification.error({
+                    title: 'Error',
+                    content: 'Failed to add account',
+                })
+            }
+
             setConfirmLoading(false);
-            Message.error("All the fields are required")
         })
     }
 
@@ -169,11 +176,12 @@ const AddUserForm = () => {
                         } />
                 </FormItem>
                 <FormItem label='Username' field='username' rules={[{ type: 'string', required: true }]}>
-                    <Input placeholder='Enter Mero Share username' />
+                    <Input placeholder='Enter Mero Share username' autoComplete="off"/>
                 </FormItem>
                 <FormItem label='Password' field='password' rules={[{ type: 'string', required: true }]}>
                     <Input.Password
                     defaultValue='password'
+                    autoComplete='off'
                     defaultVisibility={false}
                     placeholder='Enter Mero Share password' />
                 </FormItem>

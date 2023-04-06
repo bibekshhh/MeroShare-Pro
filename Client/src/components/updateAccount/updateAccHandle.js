@@ -2,7 +2,6 @@ import axios from "axios";
 import API_URL from '../../config';
 
 async function handleFetch(data){
-    console.log({clientId: data.clientId, username: data.username, password: data.password})
     try{
         let config = {
             method: 'post',

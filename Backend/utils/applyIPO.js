@@ -78,7 +78,7 @@ export default async function applyIPO(
           accountBranchId,
           appliedKitta,
           crnNumber,
-          transactionPin,
+          transactionPIN: transactionPin,
           companyShareId,
           bankId,
         }),

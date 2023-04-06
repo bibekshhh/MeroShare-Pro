@@ -41,7 +41,11 @@ const applyIndividualHandle = async (data, currentInfo) => {
             
             }
             const res = await axios.request(config)
-            applyResponseData[share] = await res.data;
+            const responseData = await res.data;
+            applyResponseData[share] = {
+                ...responseData,
+                appliedKitta: data.quantity
+            };
         } catch (error) {
             applyResponseData[share] = {success: false, error: error.message};
         }

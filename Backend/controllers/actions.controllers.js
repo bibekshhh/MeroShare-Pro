@@ -190,10 +190,12 @@ export async function addAccounts(req, res) {
 
     await newAccount.save();
 
-    res.status(201).json({ success: true, message: "New account added" });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ status: false, error: error.message });
+    if (error.code === 11000 && error.keyPattern && error.keyPattern.boid === 1) {
+      res.status(409).json({ success: false, error: "BOID already exists." });
+    } else {
+      res.status(500).json({ success: false, error: "Internal server error." });
+    }
   }
 }
 

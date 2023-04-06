@@ -1,4 +1,4 @@
-import { Alert, Grid } from '@arco-design/web-react';
+import { Alert, Grid, Tag } from '@arco-design/web-react';
 const { Col } = Grid;
 
 const ApplySuccess = ({ applyData, currentInfo }) => {
@@ -17,7 +17,7 @@ const ApplySuccess = ({ applyData, currentInfo }) => {
           {Object.entries(applyData).map(([key, item], index) => {
             const alertType = item.success ? "success" : "error";
             const alertContent = item.success
-              ? `Applied ${item.data?.appliedKitta} kitta`
+              ? `Applied ${item.data?.appliedKitta ?? 0} kitta`
               : item.error;
   
             return (
