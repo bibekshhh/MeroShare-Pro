@@ -15,90 +15,80 @@ import ApplyShareForAll from '../../components/applySharePage/apply_global/apply
 import UpdateAccountForm from '../../components/updateAccount/updateAccount';
 import handleFetch from '../../components/updateAccount/updateAccHandle.js';
 import DeleteAccount from '../../components/deleteAccount/deleteAccount';
+import RecentApplications from '../../components/recentApplications/recentApplications';
 
 const FetchData = ({accountData, ACCOUNTS_ARRAY}) => {
     const [userProfile, setUserProfile] = useState({
-        "address": "BIRATNAGAR-04-RAMJANAKI MARGA, BIRATNAGAR, MORANG, NEPAL",
-        "boid": "00552121",
-        "clientCode": "17200",
-        "contact": "9814360065, ",
-        "createdApproveDate": "2021-04-02T07:16:35Z",
-        "createdApproveDateStr": "2021-04-02",
-        "customerTypeCode": "21",
-        "demat": "1301720000552121",
-        "dematExpiryDate": "2081-03-31",
-        "email": "bibekrock2019@gmail.com",
-        "expiredDate": "2024-03-30T07:16:35Z",
-        "expiredDateStr": "2024-03-30",
-        "gender": "M",
-        "id": 2457616,
+        "address": "",
+        "boid": "",
+        "clientCode": "",
+        "contact": "",
+        "createdApproveDate": "",
+        "createdApproveDateStr": "",
+        "customerTypeCode": "",
+        "demat": "",
+        "dematExpiryDate": "",
+        "email": "",
+        "expiredDate": "",
+        "expiredDateStr": "",
+        "gender": "",
+        "id": 0,
         "imagePath": "",
-        "meroShareEmail": "bibekrock2019@gmail.com",
-        "name": "BIBEK SHAH",
-        "passwordChangeDate": "2023-03-28T15:03:09Z",
-        "passwordChangedDateStr": "2023-03-28",
-        "passwordExpiryDate": "2024-03-22T15:03:09Z",
-        "passwordExpiryDateStr": "2024-03-22",
-        "profileName": "MERO SHARE PROFILE",
-        "renderDashboard": true,
-        "renewedDate": "2023-03-23T04:10:58Z",
-        "renewedDateStr": "2023-03-23",
-        "username": "00552121"
+        "meroShareEmail": "",
+        "name": "",
+        "passwordChangeDate": "",
+        "passwordChangedDateStr": "",
+        "passwordExpiryDate": "",
+        "passwordExpiryDateStr": "",
+        "profileName": "",
+        "renderDashboard": "",
+        "renewedDate": "",
+        "renewedDateStr": "",
+        "username": ""
     });
     const [portfolioData, setPortfolioData] = useState({
             "meroShareMyPortfolio": [
                 {
-                    "currentBalance": 10,
-                    "lastTransactionPrice": "308.1",
-                    "previousClosingPrice": "317.0",
-                    "script": "MBJC",
-                    "scriptDesc": "MADHYA BHOTEKOSHI JALAVIDYUT COMPANY LIMITED- ORDINARY SHARE",
-                    "valueAsOfLastTransactionPrice": "3081.00",
-                    "valueAsOfPreviousClosingPrice": "3170.00",
-                    "valueOfLastTransPrice": 3081,
-                    "valueOfPrevClosingPrice": 3170
+                    "currentBalance": 0,
+                    "lastTransactionPrice": "",
+                    "previousClosingPrice": "",
+                    "script": "",
+                    "scriptDesc": "",
+                    "valueAsOfLastTransactionPrice": "0",
+                    "valueAsOfPreviousClosingPrice": "0",
+                    "valueOfLastTransPrice": 0,
+                    "valueOfPrevClosingPrice": 0
                 },
                 {
-                    "currentBalance": 10,
-                    "lastTransactionPrice": "468.0",
-                    "previousClosingPrice": "474.9",
-                    "script": "SPC",
-                    "scriptDesc": "SAMLING POWER COMPANY LIMITED- ORDINARY SHARE",
-                    "valueAsOfLastTransactionPrice": "4680.00",
-                    "valueAsOfPreviousClosingPrice": "4749.00",
-                    "valueOfLastTransPrice": 4680,
-                    "valueOfPrevClosingPrice": 4749
+                    "currentBalance": 0,
+                    "lastTransactionPrice": "",
+                    "previousClosingPrice": "",
+                    "script": "",
+                    "scriptDesc": "",
+                    "valueAsOfLastTransactionPrice": "0",
+                    "valueAsOfPreviousClosingPrice": "0",
+                    "valueOfLastTransPrice": 0,
+                    "valueOfPrevClosingPrice": 0
                 }
             ],
             "totalItems": 0,
             "totalValueAsOfLastTransactionPrice": "0",
-            "totalValueAsOfPreviousClosingPrice": "7919.00",
-            "totalValueOfLastTransPrice": 7761,
-            "totalValueOfPrevClosingPrice": 7919
+            "totalValueAsOfPreviousClosingPrice": "0",
+            "totalValueOfLastTransPrice": 0,
+            "totalValueOfPrevClosingPrice": 0
     });
     const [availableShares, setAvailableShares] = useState({
         "object": [
             {
-                "companyShareId": 528,
-                "subGroup": "For General Public",
-                "scrip": "KSLY",
-                "companyName": "Kumari Sunaulo Lagani Yojana",
-                "shareTypeName": "IPO",
-                "shareGroupName": "Open Ended Mutual Fund",
-                "statusName": "EDIT_APPROVE",
-                "issueOpenDate": "Mar 23, 2023 9:30:00 AM",
-                "issueCloseDate": "Apr 6, 2023 5:00:00 PM"
-            },
-            {
-                "companyShareId": 531,
-                "subGroup": "For General Public",
-                "scrip": "MJMSH",
-                "companyName": "Makar Jitumaya Suri Hydropower Ltd",
-                "shareTypeName": "IPO",
-                "shareGroupName": "Ordinary Shares",
-                "statusName": "CREATE_APPROVE",
-                "issueOpenDate": "Apr 2, 2023 10:00:00 AM",
-                "issueCloseDate": "Apr 5, 2023 5:00:00 PM"
+                "companyShareId": 201,
+                "subGroup": "",
+                "scrip": "SCRIP",
+                "companyName": "",
+                "shareTypeName": "",
+                "shareGroupName": "",
+                "statusName": "",
+                "issueOpenDate": "",
+                "issueCloseDate": ""
             }
         ],
         "totalCount": 0
@@ -121,7 +111,7 @@ const FetchData = ({accountData, ACCOUNTS_ARRAY}) => {
 
     })
 
-    if (isLoading) console.log("Loading..")
+    if (isLoading) {}
     if (isError) console.log(error.message)
 
     useEffect(() => {
@@ -156,6 +146,8 @@ const FetchData = ({accountData, ACCOUNTS_ARRAY}) => {
             <ApplySharesForIndividualAccount currentInfo={accountData} applicableIssue={availableShares}/>
             <Divider />
             <PortfolioCards loading={false} data={portfolioData} />
+            <Divider />
+            <RecentApplications currentInfo={accountData}/>
             <Divider />
             <ApplyUserProfile userProfileData={userProfile} />
             <Divider />

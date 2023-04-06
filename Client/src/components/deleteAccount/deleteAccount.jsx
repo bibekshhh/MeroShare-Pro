@@ -20,7 +20,7 @@ async function deleteHandle(currentInfo, queryClient) {
 
     if (res.success === true){
       resolve()
-      queryClient.invalidateQueries(['allAccounts']);
+      queryClient.invalidateQueries('allAccounts', { force: true });
       Message.success({
         content: 'Account removed Successfully',
       });
@@ -43,6 +43,7 @@ const DeleteAccount = ({currentInfo}) => {
       okText='Delete'
       cancelText='Cancel'
       focusLock
+      position='bottom'
     >
       <Button type='primary' status='danger' style={{ marginRight: 20 }} icon={<IconDelete />}>
         Delete

@@ -1,4 +1,4 @@
-import { Alert, Grid, Tag } from '@arco-design/web-react';
+import { Alert, Grid } from '@arco-design/web-react';
 const { Col } = Grid;
 
 const ApplySuccess = ({ applyData, currentInfo }) => {

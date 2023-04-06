@@ -6,7 +6,7 @@ import { Steps, Divider } from '@arco-design/web-react';
 
 import { IconLeft } from '@arco-design/web-react/icon';
 
-import { QueryClient } from 'react-query';
+import { useQueryClient } from 'react-query';
 
 import "./applyIndividualShare.css"
 import ApplyIndividualForm from './applyForm';
@@ -16,7 +16,7 @@ import applyIndividualHandle from './apply_IPO_handle';
 const Step = Steps.Step;
 
 const ApplySharesForIndividualAccount = ({currentInfo, applicableIssue}) => {
-  const queryClient = new QueryClient();
+  const queryClient = useQueryClient();
 
   const [current, setCurrent] = useState(1);
 
@@ -45,7 +45,8 @@ const ApplySharesForIndividualAccount = ({currentInfo, applicableIssue}) => {
         content: 'Applied Successfully!',
       })
 
-      queryClient.invalidateQueries('profile');
+      queryClient.invalidateQueries('profile', { force: true });
+      queryClient.invalidateQueries('recentApplications', { force: true });
 
       setApplyData(applyIPO_Res)
       form.resetFields();
@@ -77,7 +78,12 @@ const ApplySharesForIndividualAccount = ({currentInfo, applicableIssue}) => {
   return (
     <div>
       <div className="available-shares">
-      <label htmlFor="$" className="internal-content-header">Available Issues</label>
+      <label htmlFor="$" className="internal-content-header">
+        <span className='me-4'>Available Issues</span> 
+        <Button onClick={() => setVisible(true)} id='apply-individual-share-btn' type='secondary'>
+          Apply Share
+        </Button>
+      </label>
       <Checkbox.Group
         style={{
             display: 'flex',
@@ -117,9 +123,6 @@ const ApplySharesForIndividualAccount = ({currentInfo, applicableIssue}) => {
         })}
       </Checkbox.Group>
       </div>
-      <Button onClick={() => setVisible(true)} id='apply-individual-share-btn' type='secondary'>
-        Apply Share
-      </Button>
       <Modal
         title={`Apply Share for ${currentInfo.name}`}
         visible={visible}
@@ -166,7 +169,7 @@ const ApplySharesForIndividualAccount = ({currentInfo, applicableIssue}) => {
               height: 272,
               boxSizing: 'border-box',
             }}>
-            <Steps direction='vertical' current={current} style={{ width: 170 }}>
+            <Steps direction='vertical' current={current} style={{ width: 150 }}>
               <Step title='Details' description='Fill in the details' />
               <Step title='Processing' description='' />
             </Steps>

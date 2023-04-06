@@ -1,4 +1,5 @@
 import { Descriptions } from '@arco-design/web-react';
+import EmptyData from '../emptyData';
 
 const wantedKeyFields = ["boid", "clientCode", "demat", "dematExpiryDate", "passwordExpiryDateStr", "renewedDateStr", "meroShareEmail", "name" ];
 
@@ -8,6 +9,8 @@ const ApplyUserProfile = ({userProfileData}) => {
     }).map(item => {
         return {label: `${(item.charAt(0).toUpperCase() + item.slice(1)).replace(/([A-Z])/g, ' $1').trim()}`, value: userProfileData[item]}
     })
+
+    if (!userProfileData) return <EmptyData />
 
     return(
         <>

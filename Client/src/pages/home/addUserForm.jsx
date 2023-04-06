@@ -52,8 +52,7 @@ const AddUserForm = () => {
             })
 
             if (addAccountRes.status === 201 && addAccount.data.success === true ){
-                queryClient.invalidateQueries('allAccounts');
-                queryClient.refetchQueries('allAccounts')
+                queryClient.invalidateQueries('allAccounts', { force: true });
 
                 Notification.success({
                     title: 'Success',

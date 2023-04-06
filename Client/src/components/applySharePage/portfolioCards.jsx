@@ -1,5 +1,6 @@
 import { Statistic, Typography} from '@arco-design/web-react';
 import "./css/portfolioCards.css"
+import EmptyData from '../emptyData';
 
 const ValueStyle = ({value}) => {
     return(
@@ -12,7 +13,8 @@ const ValueStyle = ({value}) => {
 }
 
 const PortfolioCards = ({loading, data}) => {
-    if (!data) return
+    if (!data) return <EmptyData />
+
     return (
         <>
         <label htmlFor="#" className="internal-content-header">Portfolio</label>

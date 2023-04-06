@@ -56,6 +56,7 @@ export async function getUpcomingIPOList(req, res) {
   }
 }
 
+
 export async function getProfileData(req, res) {
   try {
     const { clientId, username, password } = req.body;
@@ -166,6 +167,76 @@ export async function getProfileData(req, res) {
   }
 }
 
+export async function getRecentApplications(req, res) {
+  try {
+    const { clientId, username, password } = req.body;
+
+    if (!clientId || !username || !password) {
+      return res
+        .status(400)
+        .json({ success: false, error: "All fields are required." });
+    }
+
+    const token = await getAuthToken(clientId, username, password);
+
+    const bodyData = {
+      "filterFieldParams": [
+          {
+              "key": "companyShare.companyIssue.companyISIN.script",
+              "alias": "Scrip"
+          },
+          {
+              "key": "companyShare.companyIssue.companyISIN.company.name",
+              "alias": "Company Name"
+          }
+      ],
+      "page": 1,
+      "size": 200,
+      "searchRoleViewConstants": "VIEW_APPLICANT_FORM_COMPLETE",
+      "filterDateParams": [
+          {
+              "key": "appliedDate",
+              "condition": "",
+              "alias": "",
+              "value": ""
+          },
+          {
+              "key": "appliedDate",
+              "condition": "",
+              "alias": "",
+              "value": ""
+          }
+      ]
+    };
+
+    const myApplicationResponse = await fetch(
+      "https://webbackend.cdsc.com.np/api/meroShare/applicantForm/active/search/",
+      {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          authorization: token,
+        },
+        body: JSON.stringify(bodyData),
+      }
+    );
+
+    const recentApplications = await myApplicationResponse.json();
+
+    if ( recentApplications.errorCode == 401 ) {
+      return res.json({
+        success: false,
+        error: "Failed to fetch. Refresh the page.",
+      });
+    }
+
+    res.status(200).json({ success: true, data: recentApplications})
+
+  } catch (error) {
+    res.status(500).json({ status: false, error: error.message})
+  }
+}
+
 export async function addAccounts(req, res) {
   try {
     const { name, boid, clientId, username, password, crnNumber } = req.body;
@@ -259,7 +330,7 @@ export async function getShareDetails(req, res) {
   try {
       const { shareId, clientId, username, password } = req.body;
 
-      if (!clientId || !username || !password) {
+      if (!clientId || !username || !password || shareId) {
         return res
           .status(400)
           .json({ success: false, error: "All fields are required." });
