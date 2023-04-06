@@ -1,4 +1,4 @@
-import { Menu } from '@arco-design/web-react';
+import { Menu, Popconfirm, Notification } from '@arco-design/web-react';
 import { IconApps, IconList, IconUser } from '@arco-design/web-react/icon';
 import { useState } from 'react';
 
@@ -22,7 +22,9 @@ const Sidebar = () => {
             <Link to="/">
             <MenuItem key='0_0' className="my-0 border-bottom">
                <IconApps /> Dashboard
-            </MenuItem> </Link>
+            </MenuItem> 
+            </Link>
+
             <SubMenu
               key='1'
               className="my-0 border-bottom"
@@ -42,6 +44,7 @@ const Sidebar = () => {
                 <Link to="/result">IPO Result</Link>
               </MenuItem>
             </SubMenu>
+
             <SubMenu
               key='2'
               title={
@@ -52,8 +55,28 @@ const Sidebar = () => {
             >
               <MenuItem key='2_0'>Menu 1</MenuItem>
               <MenuItem key='2_1'>Menu 2</MenuItem>
-              <MenuItem key='2_2'>Menu 3</MenuItem>
             </SubMenu>
+
+            <MenuItem key='3_0' className="my-0 mx-0 border-top logout-btn">
+              <Popconfirm
+                focusLock
+                position='bottom'
+                style={{width: '270px', marginLeft: '50px'}}
+                title='Confirm'
+                okText='Logout'
+                cancelText='Cancel'
+                content='Are you sure you want to logout?'
+                onOk={() => {
+                  window.location.assign('/login')
+                  localStorage.removeItem('token')
+                  Notification.success({
+                    title: 'Success',
+                    content: 'Logged Out Successfully',
+                  });
+                }} >
+                  <i className="bi bi-box-arrow-right me-3"></i> Logout
+              </Popconfirm>
+            </MenuItem> 
           </Menu>
         </div>
       );

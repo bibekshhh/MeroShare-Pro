@@ -48,3 +48,7 @@ div.arco-menu-item.arco-menu-selected{
 .arco-menu-inner .arco-menu-item:first-of-type.arco-menu-selected > svg {
   color: white !important;
 }
+
+.logout-btn span{
+  width: 100% !important;
+}

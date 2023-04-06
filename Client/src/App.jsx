@@ -56,6 +56,9 @@ function App() {
                     <Route path='/apply' element={<ApplyShare />} />
                     <Route path='/result' element={<CheckResult />} />
                     <Route path='/manage' element={<Manage />} />
+
+                    {/* 👇️ only match this when no other routes match */}
+                    <Route path="*" element={<PageNotFound />} />
                   </Routes>
             </div>
             </QueryClientProvider>

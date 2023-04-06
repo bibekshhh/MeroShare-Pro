@@ -29,29 +29,49 @@ const Login = ({logStatus}) => {
            })
         }
 
-        const res = await fetch(`${API_URL}/auth/login`, {
-            method: "POST",
-            headers: {
-                "content-type": "application/json"
-            },
-            body: JSON.stringify({ email , password })
-        });
+        // Create a new AbortController instance
+        const abortController = new AbortController();
 
-        const data = await res.json();
+        // Set a timeout to abort the fetch request after 10 seconds
+        setTimeout(() => {
+            abortController.abort();
+        }, 10000);
 
-        if(data.success === false || data.error) {
-            setLoading(false);
-            return Notification.error({
+        try {
+            const res = await fetch(`${API_URL}/auth/login`, {
+              method: "POST",
+              headers: {
+                "content-type": "application/json",
+              },
+              body: JSON.stringify({ email, password }),
+              signal: abortController.signal, // Set the signal option to the AbortController's signal
+            });
+        
+            const data = await res.json();
+        
+            if (data.success === false || data.error) {
+              setLoading(false);
+              return Notification.error({
                 title: "Error",
-                content: data.error
-            })
+                content: data.error,
+              });
+            }
+        
+            setLoading(true);
+            localStorage.setItem("token", data.token);
+            logStatus.setLoggedIn(true);
+        
+            navigate("/");
+        } catch (err) {
+            if (err.name === "AbortError") {
+                // Handle the abort error
+                setLoading(false);
+                return Notification.error({
+                    title: "Error",
+                    content: "The request took too long to complete.",
+                });
+            }
         }
-
-        setLoading(false);
-        localStorage.setItem("token", data.token)
-        logStatus.setLoggedIn(true)
-
-        navigate("/")
     }
 
     return (
@@ -65,13 +85,17 @@ const Login = ({logStatus}) => {
                 <h3 className="org-name">MeroShare Pro</h3>
                 <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} className="input-email" placeholder="Phone number, user or email" />
                 <input type="password"value={password} onChange={(e) => setPassword(e.target.value)} className="input-password" placeholder="Password" />
+            
+                <Spin delay={500} loading={loading} style={{width: '100%', color: "white", marginRight: 5}}>
                 <button
-                onClick={loginHandle}
+                style={{width: '100%'}}
+                onClick={(e) => loginHandle(e)}
                 type="submit"
                 className="submit-btn">
-                    <Spin delay={500} loading={loading} style={{color: "white", marginRight: 5}}></Spin>
                     Login
                 </button>
+                </Spin>
+                    
 
                 <div className="hr-container">
                     <hr className="or-hr" data-content="OR" />
