@@ -86,7 +86,7 @@ const RecentApplications = ({ currentInfo }) => {
                     </Card>
                     )
                 })
-            ): <EmptyData />
+            ): (<EmptyData />)
         }
         </div>
     </div>
