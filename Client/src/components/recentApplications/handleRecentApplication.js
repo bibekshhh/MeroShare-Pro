@@ -1,4 +1,5 @@
 import axios  from "axios"
+import API_URL from "../../config";
 
 const handleRecentApplication = async(currentInfo) => {
     try{
@@ -11,7 +12,7 @@ const handleRecentApplication = async(currentInfo) => {
         let config = {
             method: 'post',
             maxBodyLength: Infinity,
-            url: 'http://localhost:9000/action/recent-applications',
+            url: `${API_URL}/action/recent-applications`,
             headers: { 
               'Content-Type': 'application/json'
             },

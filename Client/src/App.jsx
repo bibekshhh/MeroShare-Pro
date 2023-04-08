@@ -17,7 +17,7 @@ import PageNotFound from './pages/pageNotFound';
 import { useEffect } from 'react';
 
 import { QueryClient, QueryClientProvider } from 'react-query';
-import IdleTimer from './idleTimer';
+import IdleTimer from './pages/login/idleTimer';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -44,11 +44,17 @@ function App() {
     const timer = new IdleTimer({
       timeout: 300, //expire after 5 minutes
       onTimeout: () => {
-        window.localStorage.removeItem("token")
+        if (window.localStorage.getItem('token')){
+          window.localStorage.removeItem("token")
+        }
+        setLoggedIn(false)
         window.location.reload()
       },
       onExpired: () => {
-        window.localStorage.removeItem("token")
+        if (window.localStorage.getItem('token')){
+          window.localStorage.removeItem("token")
+        }
+        setLoggedIn(false)
         window.location.reload()
       }
     });
@@ -77,7 +83,7 @@ function App() {
                     <Route path='/manage' element={<Manage />} />
 
                     {/* 👇️ only match this when no other routes match */}
-                    <Route path="*" element={<PageNotFound />} />
+                    <Route path="*" element={<PageNotFound />} logStatus={{loggedIn}} />
                   </Routes>
             </div>
             </QueryClientProvider>

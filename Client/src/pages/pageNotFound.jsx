@@ -5,16 +5,16 @@ const PageNotFound = () => {
     const navigate = useNavigate()
 
     useEffect(() => {
-        const timer = setTimeout(() => {
+        if (window.localStorage.getItem("token")){
+            navigate("/")
+        } else {
             navigate("/login")
-        }, 1000)
-
-        return () => clearTimeout(timer)
+        }
     }, [navigate]);
 
     return(
         <h1>
-            Page not found. Redirecting to login page.
+            Page not found.
         </h1>
     )
 }
