@@ -20,16 +20,20 @@ const RecentApplications = ({ currentInfo }) => {
     )
 
     if (isLoading) {}
-    if (isSuccess) {}
     if (isError) refetch()
+    if (isSuccess) {}
 
     useEffect(() => {
         if (isSuccess && data.success === true) {
             const newApplications = data.data.object || [];
             const newData = newApplications.slice(0, 3);
             setRecentApplications(newData);
-          }
-    }, [isSuccess, data])
+        } else if (isSuccess && data.status === false){
+            refetch()
+        }
+    }, [isSuccess, data, refetch])
+
+    console.log(recentApplications.length)
 
     const CardTitle = ({item}) => {
         if (item.statusName === "TRANSACTION_SUCCESS") {
@@ -82,7 +86,7 @@ const RecentApplications = ({ currentInfo }) => {
                     </Card>
                     )
                 })
-            ): (<EmptyData />)
+            ): <EmptyData />
         }
         </div>
     </div>

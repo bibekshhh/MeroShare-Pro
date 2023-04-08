@@ -14,6 +14,7 @@ import "../css/applyShare.css"
 
 import FetchData from './FetchData';
 import getAllAccounts from '../../components/getAllAccounts';
+import EmptyData from '../../components/emptyData';
 
 const Content = ({ user }) => {
     return (
@@ -63,7 +64,7 @@ const paneStyle = {
 const ApplyShare = () => {
     const [ACCOUNTS_ARRAY, set_ACCOUNTS_ARRAY] = useState([]);
 
-    const {isLoading, data: allAccounts, isSuccess} = useQuery(
+    const {isLoading, data: allAccounts, isSuccess, refetch, isError} = useQuery(
         "allAccounts",
         () => getAllAccounts(),
         {
@@ -76,6 +77,10 @@ const ApplyShare = () => {
     )
 
     if (isLoading) console.log("Loading..")
+    if (isError) refetch()
+    if (isSuccess)  {
+        console.log(allAccounts)
+    }
 
     useEffect(() => {
         if (isSuccess && allAccounts) {
@@ -88,7 +93,7 @@ const ApplyShare = () => {
         <label htmlFor="#" className="content-header">Apply Share</label>
         <Tabs defaultActiveTab='key1' direction={"vertical"} style={{ height: '100%', width: '100%', }}>
             {
-                ACCOUNTS_ARRAY && (
+                ACCOUNTS_ARRAY.length > 0 ? (
                     ACCOUNTS_ARRAY
                     .map((data, index) => ({
                         title: 
@@ -123,7 +128,7 @@ const ApplyShare = () => {
                         </div>
                         </TabPane>
                     ))
-                )
+                ) : (<EmptyData />)
             }
         </Tabs>
         </div>
