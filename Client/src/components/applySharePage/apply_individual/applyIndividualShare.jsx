@@ -1,4 +1,4 @@
-import { Modal, Button, Form, Notification, Message } from '@arco-design/web-react';
+import { Modal, Button, Form, Notification, Message, Empty } from '@arco-design/web-react';
 import { Checkbox, Space, Typography } from '@arco-design/web-react';
 
 import { useState } from 'react';
@@ -19,11 +19,9 @@ const ApplySharesForIndividualAccount = ({currentInfo, applicableIssue}) => {
   const queryClient = useQueryClient();
 
   const [current, setCurrent] = useState(1);
-
   const [visible, setVisible] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [form] = Form.useForm();
-
   const [applyData, setApplyData] = useState({})
 
   const list = (applicableIssue.object).filter((issue) => {
@@ -80,7 +78,11 @@ const ApplySharesForIndividualAccount = ({currentInfo, applicableIssue}) => {
       <div className="available-shares">
       <label htmlFor="$" className="internal-content-header">
         <span className='me-4'>Available Issues</span> 
-        <Button onClick={() => setVisible(true)} id='apply-individual-share-btn' type='secondary'>
+        <Button 
+        // disabled={list.length > 0 ? "false" : "true"}
+        onClick={() => setVisible(true)} 
+        id='apply-individual-share-btn'
+        type='secondary'>
           Apply Share
         </Button>
       </label>
@@ -91,36 +93,41 @@ const ApplySharesForIndividualAccount = ({currentInfo, applicableIssue}) => {
             flexWrap: "wrap",
             gap: '1em 0'
         }}>
-        {list.map((item) => {
-            return (
-                <Checkbox key={item.companyShareId} value={item.scrip} checked disabled>
-                {() => {
-                    return (
-                    <Space
-                        align='start'
-                        color='gray'
-                        className="custom-checkbox-card custom-checkbox-card-checked">
-               
-                        <div>
-                        <div className='custom-checkbox-card-title'>{item.scrip + " - " + item.shareGroupName}</div>
-                            <Space
-                            style={{
-                                all: 'unset',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                justifyContent: 'flex-start'
-                            }}>
-                                <Typography.Text bold>{item.companyName}</Typography.Text>
-                                <Typography.Text type='secondary'>{"Open: " + item.issueOpenDate}</Typography.Text>
-                                <Typography.Text type='secondary'>{"Close: " + item.issueCloseDate}</Typography.Text>
-                            </Space>
-                        </div>
-                    </Space>
-                    );
-                }}
-                </Checkbox>
-            );
-        })}
+        {
+          list.length === 0 ? (<Empty description="No available issues"/>)
+          : (
+            list.map((item) => {
+              return (
+                  <Checkbox key={item.companyShareId} value={item.scrip} checked disabled>
+                  {() => {
+                      return (
+                      <Space
+                          align='start'
+                          color='gray'
+                          className="custom-checkbox-card custom-checkbox-card-checked">
+                
+                          <div>
+                          <div className='custom-checkbox-card-title'>{item.scrip + " - " + item.shareGroupName}</div>
+                              <Space
+                              style={{
+                                  all: 'unset',
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  justifyContent: 'flex-start'
+                              }}>
+                                  <Typography.Text bold>{item.companyName}</Typography.Text>
+                                  <Typography.Text type='secondary'>{"Open: " + item.issueOpenDate}</Typography.Text>
+                                  <Typography.Text type='secondary'>{"Close: " + item.issueCloseDate}</Typography.Text>
+                              </Space>
+                          </div>
+                      </Space>
+                      );
+                  }}
+                  </Checkbox>
+              );
+            })
+          )
+        }
       </Checkbox.Group>
       </div>
       <Modal

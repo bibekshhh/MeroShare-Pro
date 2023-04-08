@@ -56,11 +56,14 @@ const ApplyIndividualForm = ({currentInfo, form, list}) => {
                 );
                 }}>
 
-                {(list).map((option) => (
-                <Option key={option.scrip + option.companyShareId} value={`${option.companyShareId} ${option.companyName}`}>
-                    {option.scrip + " - " + option.shareGroupName}
-                </Option>
-                ))}
+                {
+                  list.length === 0 ? ("")
+                  : (list.map((option) => (
+                    <Option key={option.scrip + option.companyShareId} value={`${option.companyShareId} ${option.companyName}`}>
+                        {option.scrip + " - " + option.shareGroupName}
+                    </Option>
+                    )))
+                }
             </Select>
           </FormItem>
           <FormItem label='Quantity' field='quantity' rules={[{ required: true }]}>

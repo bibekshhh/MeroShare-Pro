@@ -82,8 +82,6 @@ const ApplyShare = () => {
             set_ACCOUNTS_ARRAY(allAccounts)
           }
     }, [isSuccess, allAccounts])
-
-    console.log(ACCOUNTS_ARRAY)
     
     return (
         <div className='sidebar'>

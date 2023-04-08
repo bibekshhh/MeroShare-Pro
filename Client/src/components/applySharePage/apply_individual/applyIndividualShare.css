@@ -50,6 +50,10 @@ input[type='checkbox']:focus-visible + .custom-checkbox-card {
     background-color: black;
 }
 
+#apply-individual-share-btn:disabled{
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
 .custom-checkbox-card-checked {
     background-color: #eeee;
 }
