@@ -42,11 +42,11 @@ hr.or-hr::before {
     position: absolute;
     width: 50px;
     background-color: white;
-    color: rgb(158, 158, 158);
+    color: rgb(32, 32, 32);
     top: 50%;
     left: calc(50% - 25px);
     text-align: center;
-    top: 7.5px;
+    top: 5px;
 }
 
 div.login-form-main-wrapper .img-container {

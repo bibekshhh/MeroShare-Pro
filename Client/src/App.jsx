@@ -11,6 +11,7 @@ import ApplyShare from './pages/applyShare/applyShare.route';
 import Sidebar from './components/sidebar/Sidebar';
 import CheckResult from './pages/checkResult.route';
 import Login from './pages/login/login.route';
+import Signup from './pages/signup/signup.route';
 import Manage from './pages/manage/Manage.route';
 import Home from './pages/home/home.route';
 import PageNotFound from './pages/pageNotFound';
@@ -92,6 +93,7 @@ function App() {
             <BrowserRouter>
               <Routes>
                 <Route path='/login' element={<Login logStatus={{loggedIn, setLoggedIn}}/>} />
+                <Route path='/signup' element={<Signup />} />
 
                 {/* 👇️ only match this when no other routes match */}
                 <Route path="*" element={<PageNotFound />} />

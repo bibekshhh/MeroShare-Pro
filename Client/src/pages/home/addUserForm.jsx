@@ -69,7 +69,13 @@ const AddUserForm = () => {
                     title: 'Warning',
                     content: 'Account with that BOID already exists!',
                 })
-            } else {
+            } else if (error.response && error.response.status === 400) {
+                Notification.warning({
+                    title: 'Warning',
+                    content: 'Invalid Mero Share login credentials',
+                })
+            }
+            else {
                 Notification.error({
                     title: 'Error',
                     content: 'Failed to add account',

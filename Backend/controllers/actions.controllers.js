@@ -47,8 +47,6 @@ export async function getUpcomingIPOList(req, res) {
       }));
 
     res.json(filteredData);
-    console.log("Sent successfully");
-    console.log(filteredData);
   } catch (error) {
     console.log(error);
     res.status(500).json({ status: false, error: error.message });
@@ -257,7 +255,7 @@ export async function addAccounts(req, res) {
 
     if (!token) {
       return res
-        .status(200)
+        .status(400)
         .json({
           success: false,
           error: "Invalid meroshare credentials provided.",

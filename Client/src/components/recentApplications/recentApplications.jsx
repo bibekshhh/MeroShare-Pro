@@ -41,7 +41,7 @@ const RecentApplications = ({ currentInfo }) => {
         } else if (item.statusName === "BLOCK_FAILED") {
             return <Tag color="red" bordered icon={<IconCloseCircle />}>Failed</Tag>
         } else if (item.statusName === "APPROVED") {
-            return <Tag color="red" bordered icon={<IconCheckCircleFill />}>Approved</Tag>
+            return <Tag color="green" bordered icon={<IconCheckCircleFill />}>Approved</Tag>
         }
     }
 

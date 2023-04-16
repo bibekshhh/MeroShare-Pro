@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import LoginArt from './artt.svg'
+import LoginArt from '../login/artt.svg'
 import "../css/login.css"
 import { Notification, Spin } from "@arco-design/web-react";
 
-import API_URL from '../../config';
+import API_URL from "../../config";
 
-const Login = ({logStatus}) => {
+const Signup = () => {
     const navigate = useNavigate();
 
     const [email , setEmail] = useState("");
@@ -15,7 +15,7 @@ const Login = ({logStatus}) => {
 
     const [loading, setLoading] = useState(false);
 
-    const loginHandle = async (e) => {
+    const signupHandle = async (e) => {
         e.preventDefault();
 
         setLoading(true)
@@ -38,7 +38,7 @@ const Login = ({logStatus}) => {
         }, 10000);
 
         try {
-            const res = await fetch(`${API_URL}/auth/login`, {
+            const res = await fetch(`${API_URL}/auth/signup`, {
               method: "POST",
               headers: {
                 "content-type": "application/json",
@@ -48,20 +48,32 @@ const Login = ({logStatus}) => {
             });
         
             const data = await res.json();
-        
-            if (data.success === false || data.error) {
-              setLoading(false);
-              return Notification.error({
-                title: "Warning",
-                content: "Invalid email or password",
-              });
+            setLoading(false);
+
+            if (data.duplicate){
+                return Notification.warning({
+                    title: "Warning",
+                    content: data.message,
+                });
             }
         
-            setLoading(true);
-            localStorage.setItem("token", data.token);
-            logStatus.setLoggedIn(true);
-        
-            navigate("/");
+            if (data.success === false && data.error) {
+              return Notification.error({
+                title: "Error",
+                content: data.error,
+              });
+            }
+
+            if (data.success === true){
+                setTimeout(() => {
+                    navigate("/login");
+                }, 2000)
+                
+                return Notification.success({
+                    title: "Success",
+                    content: data.message,
+                });
+            }
         } catch (error) {
             if (error.name === "AbortError") {
                 // Handle the abort error
@@ -71,12 +83,6 @@ const Login = ({logStatus}) => {
                     content: "The request took too long to complete.",
                 });
             }
-
-            setLoading(false);
-            Notification.error({
-                title: 'Warning',
-                content: 'Something went wrong',
-            })
         }
     }
 
@@ -95,14 +101,13 @@ const Login = ({logStatus}) => {
                 <Spin delay={500} loading={loading} style={{width: '100%', color: "white", marginRight: 5}}>
                 <button
                 style={{width: '100%'}}
-                onClick={(e) => loginHandle(e)}
+                onClick={(e) => signupHandle(e)}
                 type="submit"
                 className="submit-btn">
-                    Login
+                    Singup
                 </button>
                 </Spin>
                     
-
                 <div className="hr-container">
                     <hr className="or-hr" data-content="OR" />
                 </div>
@@ -110,7 +115,7 @@ const Login = ({logStatus}) => {
                 <button className="forgot-password">Forgot password?</button>
             </div>
             <div className="signup-div">
-                <p>Don't have an account? <a href="/signup">Sign Up</a></p>
+                <p>Already have an account? <a href="/login">Login</a></p>
             </div>
             </div>
         </div>
@@ -118,4 +123,4 @@ const Login = ({logStatus}) => {
     )
 }
 
-export default Login;
+export default Signup;
