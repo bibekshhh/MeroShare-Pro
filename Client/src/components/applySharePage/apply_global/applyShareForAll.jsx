@@ -36,9 +36,7 @@ const ApplyShareForAll = ({applicableIssue, accounts}) => {
             title: 'Success',
             content: 'Applied Successfully!',
           })
-          console.log(res)
           setApplyData(res)
-  
           // after apply button clicked
           form.resetFields();
     

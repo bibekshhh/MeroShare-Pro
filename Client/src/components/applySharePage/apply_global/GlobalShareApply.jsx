@@ -41,7 +41,6 @@ function DataItem(props) {
     }
 
     if (isSuccess) {
-        console.log(applyRes)
         return (
             <Alert
                 key={applyRes}
