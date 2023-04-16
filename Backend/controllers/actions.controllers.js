@@ -57,7 +57,6 @@ export async function getUpcomingIPOList(req, res) {
   }
 }
 
-
 export async function getProfileData(req, res) {
   try {
     const { clientId, username, password } = req.body;
@@ -166,7 +165,6 @@ export async function getProfileData(req, res) {
 
     await new Promise((resolve) => setTimeout(resolve, 1000));
     await logout(token);
-
   } catch (error) {
     res.status(500).json({ status: false, error: error.message });
   }
@@ -185,33 +183,33 @@ export async function getRecentApplications(req, res) {
     const token = await getAuthToken(clientId, username, password);
 
     const bodyData = {
-      "filterFieldParams": [
-          {
-              "key": "companyShare.companyIssue.companyISIN.script",
-              "alias": "Scrip"
-          },
-          {
-              "key": "companyShare.companyIssue.companyISIN.company.name",
-              "alias": "Company Name"
-          }
+      filterFieldParams: [
+        {
+          key: "companyShare.companyIssue.companyISIN.script",
+          alias: "Scrip",
+        },
+        {
+          key: "companyShare.companyIssue.companyISIN.company.name",
+          alias: "Company Name",
+        },
       ],
-      "page": 1,
-      "size": 200,
-      "searchRoleViewConstants": "VIEW_APPLICANT_FORM_COMPLETE",
-      "filterDateParams": [
-          {
-              "key": "appliedDate",
-              "condition": "",
-              "alias": "",
-              "value": ""
-          },
-          {
-              "key": "appliedDate",
-              "condition": "",
-              "alias": "",
-              "value": ""
-          }
-      ]
+      page: 1,
+      size: 200,
+      searchRoleViewConstants: "VIEW_APPLICANT_FORM_COMPLETE",
+      filterDateParams: [
+        {
+          key: "appliedDate",
+          condition: "",
+          alias: "",
+          value: "",
+        },
+        {
+          key: "appliedDate",
+          condition: "",
+          alias: "",
+          value: "",
+        },
+      ],
     };
 
     const myApplicationResponse = await fetch(
@@ -228,20 +226,19 @@ export async function getRecentApplications(req, res) {
 
     const recentApplications = await myApplicationResponse.json();
 
-    if ( recentApplications.errorCode == 401 ) {
+    if (recentApplications.errorCode == 401) {
       return res.json({
         success: false,
         error: "Failed to fetch. Refresh the page.",
       });
     }
 
-    res.status(200).json({ success: true, data: recentApplications})
+    res.status(200).json({ success: true, data: recentApplications });
 
     await new Promise((resolve) => setTimeout(resolve, 1000));
     await logout(token);
-
   } catch (error) {
-    res.status(500).json({ status: false, error: error.message})
+    res.status(500).json({ status: false, error: error.message });
   }
 }
 
@@ -257,6 +254,17 @@ export async function addAccounts(req, res) {
         .json({ success: false, error: "All fields are required." });
     }
 
+    const token = await getAuthToken(clientId, username, password);
+
+    if (!token) {
+      return res
+        .status(400)
+        .json({
+          success: false,
+          error: "Invalid meroshare credentials provided.",
+        });
+    }
+
     const newAccount = new Account({
       userId,
       name,
@@ -268,9 +276,12 @@ export async function addAccounts(req, res) {
     });
 
     await newAccount.save();
-
   } catch (error) {
-    if (error.code === 11000 && error.keyPattern && error.keyPattern.boid === 1) {
+    if (
+      error.code === 11000 &&
+      error.keyPattern &&
+      error.keyPattern.boid === 1
+    ) {
       res.status(409).json({ success: false, error: "BOID already exists." });
     } else {
       res.status(500).json({ success: false, error: "Internal server error." });
@@ -301,7 +312,7 @@ export async function editAccount(req, res) {
     let { userId } = req.userData;
 
     await Account.findByIdAndUpdate(accountId, data, {
-      new: true
+      new: true,
     });
 
     res.json({ success: true, message: "Account updated successfully." });
@@ -336,31 +347,33 @@ export async function deleteAccount(req, res) {
 
 export async function getShareDetails(req, res) {
   try {
-      const { shareId, clientId, username, password } = req.body;
+    const { shareId, clientId, username, password } = req.body;
 
-      if (!clientId || !username || !password || shareId) {
-        return res
-          .status(400)
-          .json({ success: false, error: "All fields are required." });
-      }
-  
-      const token = await getAuthToken(clientId, username, password);
-      
-      const res = await fetch("https://webbackend.cdsc.com.np/api/meroShare/active/" + shareId, {
-          method: "GET",
-          headers: {
-              "authorization": token
-          }
-      });
-
-      const data = await res.json();
-      res.status(200).json({status: true, data: data})
-
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      await logout(token);
-      
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ status: false, error: error.message });
+    if (!clientId || !username || !password || shareId) {
+      return res
+        .status(400)
+        .json({ success: false, error: "All fields are required." });
     }
+
+    const token = await getAuthToken(clientId, username, password);
+
+    const res = await fetch(
+      "https://webbackend.cdsc.com.np/api/meroShare/active/" + shareId,
+      {
+        method: "GET",
+        headers: {
+          authorization: token,
+        },
+      }
+    );
+
+    const data = await res.json();
+    res.status(200).json({ status: true, data: data });
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await logout(token);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ status: false, error: error.message });
+  }
 }
