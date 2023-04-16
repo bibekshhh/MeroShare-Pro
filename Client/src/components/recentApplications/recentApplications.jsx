@@ -40,6 +40,8 @@ const RecentApplications = ({ currentInfo }) => {
             return <Tag color="arcoblue" bordered icon={<IconClockCircle />}>Pending</Tag>
         } else if (item.statusName === "BLOCK_FAILED") {
             return <Tag color="red" bordered icon={<IconCloseCircle />}>Failed</Tag>
+        } else if (item.statusName === "APPROVED") {
+            return <Tag color="red" bordered icon={<IconCheckCircleFill />}>Approved</Tag>
         }
     }
 
@@ -76,6 +78,7 @@ const RecentApplications = ({ currentInfo }) => {
                             <Typography.Text type='secondary'>
                                 {`Status: ${(item.statusName === "BLOCKED_APPROVE") ? "Amount Blocked" 
                                 : (item.statusName === "TRANSACTION_SUCCESS") ? "Success"
+                                : (item.statusName === 'APPROVED') ? "Amount Blocked"
                                 : "Amount Block Failed"
                                 }`}</Typography.Text>
                             <Typography.Text type='secondary'>{`Type: ${item.shareGroupName}`}</Typography.Text>

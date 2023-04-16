@@ -61,6 +61,13 @@ const UpdateAccountForm = ({currentInfo}) => {
 
             if (addAccountRes.status === 201 ) return
 
+            if (addAccount.success === false) {
+                Notification.error({
+                    title: 'Failed',
+                    content: 'Invalid login credentials',
+                })
+            }
+
             Notification.success({
                 title: 'Success',
                 content: 'Account updated Successfully!',

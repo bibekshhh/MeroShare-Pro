@@ -1,9 +1,7 @@
 import axios from "axios";
 import fetch from "node-fetch";
 import { getAuthToken, getOwnDetails } from "../utils/index.js";
-import User from "../models/User.js";
 import Account from "../models/Account.js";
-import actionsRouter from "../routes/actions.routes.js";
 import mongoose from "mongoose";
 import logout from "../utils/logout.js";
 
@@ -255,10 +253,11 @@ export async function addAccounts(req, res) {
     }
 
     const token = await getAuthToken(clientId, username, password);
+    await logout(token);
 
     if (!token) {
       return res
-        .status(400)
+        .status(200)
         .json({
           success: false,
           error: "Invalid meroshare credentials provided.",
