@@ -79,7 +79,6 @@ const ApplySharesForIndividualAccount = ({currentInfo, applicableIssue}) => {
       <label htmlFor="$" className="internal-content-header">
         <span className='me-4'>Available Issues</span> 
         <Button 
-        // disabled={list.length > 0 ? "false" : "true"}
         onClick={() => setVisible(true)} 
         id='apply-individual-share-btn'
         type='secondary'>
@@ -178,7 +177,7 @@ const ApplySharesForIndividualAccount = ({currentInfo, applicableIssue}) => {
             }}>
             <Steps direction='vertical' current={current} style={{ width: 150 }}>
               <Step title='Details' description='Fill in the details' />
-              <Step title='Processing' description='' />
+              <Step title='Processing' description='Status window' />
             </Steps>
           </div>
           <Divider type='vertical' style={{ display: 'block', height: 'auto', margin: '0 20px 0 15px', background: 'white' }}/>

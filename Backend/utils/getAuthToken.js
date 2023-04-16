@@ -27,6 +27,7 @@ async function getAuthToken(clientId, username, password) {
 
     } catch (error) {
         console.log(error)
+        return false
     }
 }
 

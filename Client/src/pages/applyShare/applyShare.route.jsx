@@ -78,9 +78,7 @@ const ApplyShare = () => {
 
     if (isLoading) console.log("Loading..")
     if (isError) refetch()
-    if (isSuccess)  {
-        console.log(allAccounts)
-    }
+    if (isSuccess) {}
 
     useEffect(() => {
         if (isSuccess && allAccounts) {

@@ -5,6 +5,7 @@ import User from "../models/User.js";
 import Account from "../models/Account.js";
 import actionsRouter from "../routes/actions.routes.js";
 import mongoose from "mongoose";
+import logout from "../utils/logout.js";
 
 export async function getUpcomingIPOList(req, res) {
   try {
@@ -162,6 +163,10 @@ export async function getProfileData(req, res) {
       ownDetails: rawOwnDetails,
       applicableIssues: applicableIssueParsedResponse,
     });
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await logout(token);
+
   } catch (error) {
     res.status(500).json({ status: false, error: error.message });
   }
@@ -231,6 +236,9 @@ export async function getRecentApplications(req, res) {
     }
 
     res.status(200).json({ success: true, data: recentApplications})
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await logout(token);
 
   } catch (error) {
     res.status(500).json({ status: false, error: error.message})
@@ -347,6 +355,10 @@ export async function getShareDetails(req, res) {
 
       const data = await res.json();
       res.status(200).json({status: true, data: data})
+
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await logout(token);
+      
     } catch (error) {
         console.log(error);
         res.status(500).json({ status: false, error: error.message });

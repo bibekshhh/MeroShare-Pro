@@ -6,7 +6,7 @@ const Option = Select.Option;
 const ApplyForm = ({list, form, accountsList}) => {
     const formItemLayout = {
         labelCol: {
-            span: 4,
+            span: 5,
         },
         wrapperCol: {
             span: 20,
@@ -94,7 +94,7 @@ const ApplyForm = ({list, form, accountsList}) => {
               }}>
 
               {(list).map((option) => (
-              <Option key={option.scrip + option.companyShareId} value={option.companyShareId}>
+              <Option key={option.scrip + option.companyShareId} value={`${option.companyShareId} ${option.scrip}`}>
                   {option.scrip + " - " + option.shareGroupName}
               </Option>
               ))}

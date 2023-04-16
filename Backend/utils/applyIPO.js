@@ -102,13 +102,12 @@ export default async function applyIPO(
       };
     }
 
-    console.log(data)
     shareDetails = await getShareDetails(token, companyShareId)
-
+    
     return { success: true, data: {appliedKitta, companyShareId, demat, boid, shareDetails}};
       
   } catch (error) {
-    console.log(error);
-    return { success: false, error: error.message, data: shareDetails };
+    console.log("Failed to apply");
+    return { status: false, error: error.message, data: shareDetails };
   }
 }

@@ -33,8 +33,6 @@ const RecentApplications = ({ currentInfo }) => {
         }
     }, [isSuccess, data, refetch])
 
-    console.log(recentApplications.length)
-
     const CardTitle = ({item}) => {
         if (item.statusName === "TRANSACTION_SUCCESS") {
             return <Tag color="green" bordered icon={<IconCheckCircleFill />}>Complete</Tag>

@@ -4,9 +4,11 @@ import { IconLeft } from '@arco-design/web-react/icon';
 
 import { Modal, Form, Message } from '@arco-design/web-react';
 
+
 import "../apply_individual/applyIndividualShare.css"
 import "./applyShareForAll.css"
 import ApplyForm from './applyForm';
+import GlobalShareApply from './GlobalShareApply';
 
 const Step = Steps.Step;
 
@@ -14,6 +16,9 @@ const ApplyShareForAll = ({applicableIssue, accounts}) => {
   const [current, setCurrent] = useState(1);
   const [visible, setVisible] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
+
+  const [applyData, setApplyData] = useState([]);
+
   const [form] = Form.useForm();
 
   const list = (applicableIssue.object).filter((issue) => {
@@ -26,18 +31,16 @@ const ApplyShareForAll = ({applicableIssue, accounts}) => {
   const applyShare = () => {
     form.validate()
         .then((res) => {
-          setTimeout(() => {
-            form.resetFields();
-            Notification.success({
-              title: 'Success',
-              content: 'Applied Successfully!',
-            })
-            console.log(res)
-    
-            // after apply button clicked
-            form.resetFields();
-            setConfirmLoading(false);
-          }, 5500);
+          
+          Notification.success({
+            title: 'Success',
+            content: 'Applied Successfully!',
+          })
+          console.log(res)
+          setApplyData(res)
+  
+          // after apply button clicked
+          form.resetFields();
     
           setCurrent(current + 1)
           setConfirmLoading(true);
@@ -53,7 +56,10 @@ const ApplyShareForAll = ({applicableIssue, accounts}) => {
         style={{
           width: '450px',
           paddingRight: '10px',
-          height: 272,
+          height: 320,
+          maxHeight: 320,
+          overflow: 'auto',
+          scrollBehavior: 'smooth',
           background: 'var(--color-bg-2)',
           color: '#C2C7CC',
         }}>
@@ -61,7 +67,7 @@ const ApplyShareForAll = ({applicableIssue, accounts}) => {
         {
           step === 1? 
           <ApplyForm form={form} list={list} accountsList={accountsList} />
-          : <h2>This is applying process</h2>
+          : <GlobalShareApply form={applyData} setConfirmLoading={setConfirmLoading}/>
         }
       </div>
     );
@@ -120,12 +126,14 @@ const ApplyShareForAll = ({applicableIssue, accounts}) => {
             style={{
               background: 'var(--color-bg-2)',
               padding: '10px 15px',
-              height: 272,
+              height: '320px',
+              maxHeight: '320px',
+              overflow: 'auto',
               boxSizing: 'border-box',
             }}>
             <Steps direction='vertical' current={current} style={{ width: 170 }}>
-              <Step title='Succeeded' description='This is a description' />
-              <Step title='Processing' description='This is a description' />
+              <Step title='Details' description='Fill in the details' />
+              <Step title='Processing' description='Status window' />
             </Steps>
           </div>
           <Divider type='vertical' style={{ display: 'block', height: 'auto', margin: '0 20px 0 15px', background: 'white' }}/>

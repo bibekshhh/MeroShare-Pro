@@ -1,5 +1,5 @@
 import './App.css';
-import {BrowserRouter, Routes, Route, Outlet} from "react-router-dom"
+import {BrowserRouter, Routes, Route, Outlet, Navigate} from "react-router-dom"
 import { useState } from 'react';
 
 import "@arco-design/web-react/dist/css/arco.css";
@@ -45,17 +45,17 @@ function App() {
       timeout: 300, //expire after 5 minutes
       onTimeout: () => {
         if (window.localStorage.getItem('token')){
-          window.localStorage.removeItem("token")
+            window.localStorage.removeItem("token")
+            setLoggedIn(false)
+            window.location.reload()
         }
-        setLoggedIn(false)
-        window.location.reload()
       },
       onExpired: () => {
         if (window.localStorage.getItem('token')){
-          window.localStorage.removeItem("token")
+            window.localStorage.removeItem("token")
+            setLoggedIn(false)
+            window.location.reload()
         }
-        setLoggedIn(false)
-        window.location.reload()
       }
     });
 
