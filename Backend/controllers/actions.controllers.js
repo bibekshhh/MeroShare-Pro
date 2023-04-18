@@ -55,187 +55,177 @@ export async function getUpcomingIPOList(req, res) {
 
 export async function getProfileData(req, res) {
   try {
-    const { clientId, username, password } = req.body;
-
-    if (!clientId || !username || !password) {
-      return res
-        .status(400)
-        .json({ success: false, error: "All fields are required." });
-    }
-
-    const token = await getAuthToken(clientId, username, password);
-
-    const applicableIsssueOptions = {
-      filterFieldParams: [
-        {
-          key: "companyIssue.companyISIN.script",
-          alias: "Scrip",
-        },
-        {
-          key: "companyIssue.companyISIN.company.name",
-          alias: "Company Name",
-        },
-        {
-          key: "companyIssue.assignedToClient.name",
-          value: "",
-          alias: "Issue Manager",
-        },
-      ],
-      page: 1,
-      size: 10,
-      searchRoleViewConstants: "VIEW_APPLICABLE_SHARE",
-      filterDateParams: [
-        {
-          key: "minIssueOpenDate",
-          condition: "",
-          alias: "",
-          value: "",
-        },
-        {
-          key: "maxIssueCloseDate",
-          condition: "",
-          alias: "",
-          value: "",
-        },
-      ],
-    };
-
-    const applicableIssueResponse = await fetch(
-      "https://webbackend.cdsc.com.np/api/meroShare/companyShare/applicableIssue/",
-      {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-          authorization: token,
-        },
-        body: JSON.stringify(applicableIsssueOptions),
+      const { clientId, username, password } = req.body;
+  
+      if (!clientId || !username || !password) {
+        return res
+          .status(400)
+          .json({ success: false, error: "All fields are required." });
       }
-    );
+  
+      let token = await getAuthToken(clientId, username, password);
+      if (!token) return {success: false, error: "User not authorized"}
+  
+      const applicableIsssueOptions = {
+        "filterFieldParams":[
+          {"key":"companyIssue.companyISIN.script","alias":"Scrip"},
+          {"key":"companyIssue.companyISIN.company.name","alias":"Company Name"},
+          {"key":"companyIssue.assignedToClient.name","value":"","alias":"Issue Manager"}
+        ],
+        "page":1,
+        "size":10,
+        "searchRoleViewConstants":"VIEW_APPLICABLE_SHARE",
+        "filterDateParams":[
+          {
+            "key":"minIssueOpenDate",
+            "condition":"","alias":"",
+            "value":""
+          },
+          {"key":"maxIssueCloseDate",
+          "condition":"",
+          "alias":"",
+          "value":""}
+        ]};
+  
+      const applicableIssueResponse = await fetch(
+        "https://webbackend.cdsc.com.np/api/meroShare/companyShare/applicableIssue/",
+        {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            authorization: token,
+          },
+          body: JSON.stringify(applicableIsssueOptions),
+        }
+      );
+  
+      const rawOwnDetails = await getOwnDetails(token);
+  
+      const { clientCode, demat } = await rawOwnDetails;
+  
+      const data = {
+        sortBy: "script",
+        demat: [demat],
+        clientCode: clientCode,
+        page: 1,
+        size: 10,
+        sortAsc: true,
+      };
+  
+      const myPortfolioParsedResponse = await fetch(
+        "https://webbackend.cdsc.com.np/api/meroShareView/myPortfolio/",
+        {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            authorization: token,
+          },
+          body: JSON.stringify(data),
+        }
+      );
+  
+      console.log({
+        myPortfoilio: await myPortfolioParsedResponse.json(),
+        ownDetails: rawOwnDetails,
+        applicableIssues: await applicableIssueResponse.json(),
+      })
 
-    const applicableIssueParsedResponse = await applicableIssueResponse.json();
-
-    const rawOwnDetails = await getOwnDetails(token);
-
-    const { clientCode, demat } = rawOwnDetails;
-
-    const data = {
-      sortBy: "script",
-      demat: [demat],
-      clientCode: clientCode,
-      page: 1,
-      size: 10,
-      sortAsc: true,
-    };
-
-    const myPortfolioResponse = await fetch(
-      "https://webbackend.cdsc.com.np/api/meroShareView/myPortfolio/",
-      {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-          authorization: token,
-        },
-        body: JSON.stringify(data),
-      }
-    );
-
-    const myPortfolioParsedResponse = await myPortfolioResponse.json();
-
-    if (
-      applicableIssueParsedResponse.errorCode == 401 ||
-      rawOwnDetails.errorCode == 401 ||
-      myPortfolioParsedResponse.errorCode == 401
-    ) {
-      return res.json({
-        success: false,
-        error: "Failed to fetch. Refresh the page.",
+      res.json({
+        success: true,
+        myPortfoilio: await myPortfolioParsedResponse.json(),
+        ownDetails: rawOwnDetails,
+        applicableIssues: await applicableIssueResponse.json(),
       });
-    }
-
-    res.json({
-      success: true,
-      myPortfoilio: myPortfolioParsedResponse,
-      ownDetails: rawOwnDetails,
-      applicableIssues: applicableIssueParsedResponse,
-    });
-
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    await logout(token);
-  } catch (error) {
-    res.status(500).json({ status: false, error: error.message });
-  }
+  
+    } catch (error) {
+      res.status(500).json({ status: false, error: error.message });
+    }  
 }
 
 export async function getRecentApplications(req, res) {
-  try {
-    const { clientId, username, password } = req.body;
+  const { clientId, username, password } = req.body;
 
-    if (!clientId || !username || !password) {
-      return res
-        .status(400)
-        .json({ success: false, error: "All fields are required." });
-    }
-
-    const token = await getAuthToken(clientId, username, password);
-
-    const bodyData = {
-      filterFieldParams: [
-        {
-          key: "companyShare.companyIssue.companyISIN.script",
-          alias: "Scrip",
-        },
-        {
-          key: "companyShare.companyIssue.companyISIN.company.name",
-          alias: "Company Name",
-        },
-      ],
-      page: 1,
-      size: 200,
-      searchRoleViewConstants: "VIEW_APPLICANT_FORM_COMPLETE",
-      filterDateParams: [
-        {
-          key: "appliedDate",
-          condition: "",
-          alias: "",
-          value: "",
-        },
-        {
-          key: "appliedDate",
-          condition: "",
-          alias: "",
-          value: "",
-        },
-      ],
-    };
-
-    const myApplicationResponse = await fetch(
-      "https://webbackend.cdsc.com.np/api/meroShare/applicantForm/active/search/",
-      {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-          authorization: token,
-        },
-        body: JSON.stringify(bodyData),
-      }
-    );
-
-    const recentApplications = await myApplicationResponse.json();
-
-    if (recentApplications.errorCode == 401) {
-      return res.json({
-        success: false,
-        error: "Failed to fetch. Refresh the page.",
-      });
-    }
-
-    res.status(200).json({ success: true, data: recentApplications });
-
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    await logout(token);
-  } catch (error) {
-    res.status(500).json({ status: false, error: error.message });
+  if (!clientId || !username || !password) {
+    return res
+      .status(400)
+      .json({ success: false, error: "All fields are required." });
   }
+
+  const bodyData = {
+    filterFieldParams: [
+      {
+        key: "companyShare.companyIssue.companyISIN.script",
+        alias: "Scrip",
+      },
+      {
+        key: "companyShare.companyIssue.companyISIN.company.name",
+        alias: "Company Name",
+      },
+    ],
+    page: 1,
+    size: 200,
+    searchRoleViewConstants: "VIEW_APPLICANT_FORM_COMPLETE",
+    filterDateParams: [
+      {
+        key: "appliedDate",
+        condition: "",
+        alias: "",
+        value: "",
+      },
+      {
+        key: "appliedDate",
+        condition: "",
+        alias: "",
+        value: "",
+      },
+    ],
+  };
+
+  let recentApplications;
+  let token;
+  let retries = 3;
+
+  while (retries > 0) {
+    try {
+      token = await getAuthToken(clientId, username, password);
+      if (!token) {
+        return {
+          success: false,
+          error: "User is not authorized. The password might have expired",
+        };
+      }
+
+      const myApplicationResponse = await fetch(
+        "https://webbackend.cdsc.com.np/api/meroShare/applicantForm/active/search/",
+        {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            authorization: token,
+          },
+          body: JSON.stringify(bodyData),
+        }
+      );
+
+      recentApplications = await myApplicationResponse.json();
+
+      if (recentApplications.errorCode == 401) {
+        throw new Error("Failed to fetch. Refresh the page.");
+      }
+
+      break;
+    } catch (error) {
+      retries--;
+      if (retries === 0) {
+        return res.status(500).json({ success: false, error: error.message });
+      }
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    } finally {
+      await logout(token);
+    }
+  }
+
+  res.status(200).json({ success: true, data: recentApplications });
 }
 
 export async function addAccounts(req, res) {

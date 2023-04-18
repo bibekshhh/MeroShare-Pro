@@ -32,17 +32,18 @@ function useDataFetcher(share, account, quantity, t_pin, setApplyRes) {
                 const res = await axios.request(config)
                 const responseData = await res.data;
 
-                setApplyRes({ responseData, account, share });
+                setApplyRes({ success: responseData.success, responseData, account, share });
 
             } catch (error) {
-                setApplyRes({status: false, responseData: error, account, share });
+                setApplyRes({success: false, responseData: error, account, share });
             } 
         },
         {
-            refetchOnWindowFocus: false
+            refetchOnWindowFocus: false,
+            cacheTime: 0
         }
     );
     return query;
-    }
+}
 
 export default useDataFetcher;

@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 
 function DataItem(props) {    
     const [applyRes, setApplyRes] = useState([]);
-
     let {
         share, 
         account, 
@@ -46,8 +45,8 @@ function DataItem(props) {
                 key={applyRes}
                 style={{ marginBottom: 10, width: '100%' }}
                 type={`${applyRes.success ? 'success' : 'error'}`}
-                title={`${applyRes.account?.name + " - " + applyRes.share.split(" ")[1]} · ${applyRes.success ? "Success" : "Failed"}`}
-                content={applyRes.responseData.error}
+                title={`${applyRes.account?.name + " - " + applyRes.share?.split(" ")[1]} · ${applyRes.success ? "Success" : "Failed"}`}
+                content={applyRes.responseData?.message? applyRes.responseData?.message : applyRes.responseData?.error}
             />
         )
     }

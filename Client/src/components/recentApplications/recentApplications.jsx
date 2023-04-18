@@ -42,6 +42,8 @@ const RecentApplications = ({ currentInfo }) => {
             return <Tag color="red" bordered icon={<IconCloseCircle />}>Failed</Tag>
         } else if (item.statusName === "APPROVED") {
             return <Tag color="green" bordered icon={<IconCheckCircleFill />}>Approved</Tag>
+        } else if (item.statusName === "TRANSACTION_PENDING"){
+            return <Tag color="arcoblue" bordered icon={<IconClockCircle />}>Pending</Tag>
         }
     }
 
@@ -79,6 +81,7 @@ const RecentApplications = ({ currentInfo }) => {
                                 {`Status: ${(item.statusName === "BLOCKED_APPROVE") ? "Amount Blocked" 
                                 : (item.statusName === "TRANSACTION_SUCCESS") ? "Success"
                                 : (item.statusName === 'APPROVED') ? "Amount Blocked"
+                                : (item.statusName === "TRANSACTION_PENDING") ? "Transaction Pending"
                                 : "Amount Block Failed"
                                 }`}</Typography.Text>
                             <Typography.Text type='secondary'>{`Type: ${item.shareGroupName}`}</Typography.Text>

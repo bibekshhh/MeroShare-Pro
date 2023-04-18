@@ -114,12 +114,13 @@ const FetchData = ({accountData, ACCOUNTS_ARRAY}) => {
     if (isLoading) {}
     if (isError) console.log(error.message)
 
+    console.log(profileData)
     useEffect(() => {
         if (isSuccess && profileData.success === false){
             refetchProfile()
-        } else if (isSuccess && profileData) {
+        } else if (isSuccess || profileData) {
             const { applicableIssues, myPortfoilio, ownDetails } = profileData;
-            if (applicableIssues && myPortfoilio && ownDetails && !myPortfoilio.errorCode) {
+            if (applicableIssues && myPortfoilio && ownDetails) {
               setAvailableShares(applicableIssues);
               setPortfolioData(myPortfoilio);
               setUserProfile(ownDetails);
@@ -127,6 +128,7 @@ const FetchData = ({accountData, ACCOUNTS_ARRAY}) => {
         }
     }, [isSuccess, profileData, refetchProfile])
 
+    console.log(availableShares)
     return(
         <>
         <div className="actions-section">

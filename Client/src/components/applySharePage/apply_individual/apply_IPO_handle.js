@@ -4,8 +4,6 @@ import API_URL from '../../../config';
 const applyIndividualHandle = async (data, currentInfo) => {
     let applyResponseData = {};
 
-    console.log(data)
-
     for (const share of data.share) {
         try{
             const {
@@ -51,7 +49,6 @@ const applyIndividualHandle = async (data, currentInfo) => {
         }
     }
 
-    console.log(applyResponseData)
     return applyResponseData
 }
 
