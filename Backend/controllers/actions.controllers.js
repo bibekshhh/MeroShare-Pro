@@ -55,91 +55,116 @@ export async function getUpcomingIPOList(req, res) {
 
 export async function getProfileData(req, res) {
   try {
-      const { clientId, username, password } = req.body;
-  
-      if (!clientId || !username || !password) {
-        return res
-          .status(400)
-          .json({ success: false, error: "All fields are required." });
-      }
-  
-      let token = await getAuthToken(clientId, username, password);
-      if (!token) return {success: false, error: "User not authorized"}
-  
-      const applicableIsssueOptions = {
-        "filterFieldParams":[
-          {"key":"companyIssue.companyISIN.script","alias":"Scrip"},
-          {"key":"companyIssue.companyISIN.company.name","alias":"Company Name"},
-          {"key":"companyIssue.assignedToClient.name","value":"","alias":"Issue Manager"}
-        ],
-        "page":1,
-        "size":10,
-        "searchRoleViewConstants":"VIEW_APPLICABLE_SHARE",
-        "filterDateParams":[
-          {
-            "key":"minIssueOpenDate",
-            "condition":"","alias":"",
-            "value":""
-          },
-          {"key":"maxIssueCloseDate",
-          "condition":"",
-          "alias":"",
-          "value":""}
-        ]};
-  
-      const applicableIssueResponse = await fetch(
-        "https://webbackend.cdsc.com.np/api/meroShare/companyShare/applicableIssue/",
-        {
-          method: "POST",
-          headers: {
-            "content-type": "application/json",
-            authorization: token,
-          },
-          body: JSON.stringify(applicableIsssueOptions),
-        }
-      );
-  
-      const rawOwnDetails = await getOwnDetails(token);
-  
-      const { clientCode, demat } = await rawOwnDetails;
-  
-      const data = {
-        sortBy: "script",
-        demat: [demat],
-        clientCode: clientCode,
-        page: 1,
-        size: 10,
-        sortAsc: true,
-      };
-  
-      const myPortfolioParsedResponse = await fetch(
-        "https://webbackend.cdsc.com.np/api/meroShareView/myPortfolio/",
-        {
-          method: "POST",
-          headers: {
-            "content-type": "application/json",
-            authorization: token,
-          },
-          body: JSON.stringify(data),
-        }
-      );
-  
-      console.log({
-        myPortfoilio: await myPortfolioParsedResponse.json(),
-        ownDetails: rawOwnDetails,
-        applicableIssues: await applicableIssueResponse.json(),
-      })
+    const { clientId, username, password } = req.body;
 
-      res.json({
-        success: true,
-        myPortfoilio: await myPortfolioParsedResponse.json(),
-        ownDetails: rawOwnDetails,
-        applicableIssues: await applicableIssueResponse.json(),
+    if (!clientId || !username || !password) {
+      return res
+        .status(400)
+        .json({ success: false, error: "All fields are required." });
+    }
+
+    const token = await getAuthToken(clientId, username, password);
+    if (!token) return {success: false, error: 'User not authorized'}
+
+    const applicableIsssueOptions = {
+      filterFieldParams: [
+        {
+          key: "companyIssue.companyISIN.script",
+          alias: "Scrip",
+        },
+        {
+          key: "companyIssue.companyISIN.company.name",
+          alias: "Company Name",
+        },
+        {
+          key: "companyIssue.assignedToClient.name",
+          value: "",
+          alias: "Issue Manager",
+        },
+      ],
+      page: 1,
+      size: 10,
+      searchRoleViewConstants: "VIEW_APPLICABLE_SHARE",
+      filterDateParams: [
+        {
+          key: "minIssueOpenDate",
+          condition: "",
+          alias: "",
+          value: "",
+        },
+        {
+          key: "maxIssueCloseDate",
+          condition: "",
+          alias: "",
+          value: "",
+        },
+      ],
+    };
+
+    const applicableIssueResponse = await fetch(
+      "https://webbackend.cdsc.com.np/api/meroShare/companyShare/applicableIssue/",
+      {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          authorization: token,
+        },
+        body: JSON.stringify(applicableIsssueOptions),
+      }
+    );
+
+    const applicableIssueParsedResponse = await applicableIssueResponse.json();
+
+    const rawOwnDetails = await getOwnDetails(token);
+
+    const { clientCode, demat } = rawOwnDetails;
+
+    const data = {
+      sortBy: "script",
+      demat: [demat],
+      clientCode: clientCode,
+      page: 1,
+      size: 10,
+      sortAsc: true,
+    };
+
+    const myPortfolioResponse = await fetch(
+      "https://webbackend.cdsc.com.np/api/meroShareView/myPortfolio/",
+      {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          authorization: token,
+        },
+        body: JSON.stringify(data),
+      }
+    );
+
+    const myPortfolioParsedResponse = await myPortfolioResponse.json();
+
+    if (
+      applicableIssueParsedResponse.errorCode == 401 ||
+      rawOwnDetails.errorCode == 401 ||
+      myPortfolioParsedResponse.errorCode == 401
+    ) {
+      return res.json({
+        success: false,
+        error: "Failed to fetch. Refresh the page.",
       });
-  
-    } catch (error) {
-      res.status(500).json({ status: false, error: error.message });
-    }  
+    }
+
+    res.json({
+      success: true,
+      myPortfoilio: myPortfolioParsedResponse,
+      ownDetails: rawOwnDetails,
+      applicableIssues: applicableIssueParsedResponse,
+    });
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await logout(token);
+  } catch (error) {
+    res.status(500).json({ status: false, error: error.message });
+  }
 }
 
 export async function getRecentApplications(req, res) {
