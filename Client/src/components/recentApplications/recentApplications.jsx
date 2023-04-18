@@ -35,7 +35,7 @@ const RecentApplications = ({ currentInfo }) => {
 
     const CardTitle = ({item}) => {
         if (item.statusName === "TRANSACTION_SUCCESS") {
-            return <Tag color="green" bordered icon={<IconCheckCircleFill />}>Complete</Tag>
+            return <Tag color="green" bordered icon={<IconCheckCircleFill />}>Success</Tag>
         } else if (item.statusName === "BLOCKED_APPROVE") {
             return <Tag color="arcoblue" bordered icon={<IconClockCircle />}>Pending</Tag>
         } else if (item.statusName === "BLOCK_FAILED") {
@@ -79,7 +79,7 @@ const RecentApplications = ({ currentInfo }) => {
                             <Typography.Text bold>{item.companyName}</Typography.Text>
                             <Typography.Text type='secondary'>
                                 {`Status: ${(item.statusName === "BLOCKED_APPROVE") ? "Amount Blocked" 
-                                : (item.statusName === "TRANSACTION_SUCCESS") ? "Success"
+                                : (item.statusName === "TRANSACTION_SUCCESS") ? item.allottedStatus
                                 : (item.statusName === 'APPROVED') ? "Amount Blocked"
                                 : (item.statusName === "TRANSACTION_PENDING") ? "Transaction Pending"
                                 : "Amount Block Failed"

@@ -231,14 +231,55 @@ export async function getRecentApplications(req, res) {
           body: JSON.stringify(bodyData),
         }
       );
-
-      recentApplications = await myApplicationResponse.json();
+      
+      let recentApplications = await myApplicationResponse.json();
 
       if (recentApplications.errorCode == 401) {
         throw new Error("Failed to fetch. Refresh the page.");
       }
 
-      break;
+      // Extract the first 5 objects from the "data" array
+      if (!(recentApplications.object)) return recentApplications
+      const firstFiveObjects = recentApplications.object.slice(0, 5);
+      
+      // Create a new object with the first 5 objects and metadata
+      const newResponse = {
+        object: firstFiveObjects,
+        totalCount: firstFiveObjects.length
+      };
+
+      // console.log(newResponse.object.length)
+
+      const updatedObject = await Promise.all(newResponse.object.map(async (application) => {
+        if (application.statusName === "TRANSACTION_SUCCESS") {
+            const res = await fetch(
+              `https://webbackend.cdsc.com.np/api/meroShare/applicantForm/report/detail/${application.applicantFormId}`,
+              {
+                method: "GET",
+                headers: {
+                  "content-type": "application/json",
+                  authorization: token,
+                },
+              }
+            );
+            
+            const resStatus = await res.json();
+            if (!resStatus) return application
+            if (recentApplications.errorCode == 401) {
+              // console.log("Failed to fetch. Refresh the page.");
+              return application
+            }
+
+            application.allottedStatus = resStatus.statusName;
+            return application
+        } else {
+          return application;
+        }
+      }));
+      
+      newResponse.object = updatedObject;  
+      // console.log(newResponse)
+      return res.status(200).json({success: true, data: newResponse});    
     } catch (error) {
       retries--;
       if (retries === 0) {

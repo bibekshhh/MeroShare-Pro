@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:9000";
+const API_URL = "https://meroshare-pro.herokuapp.com";
 
 export default API_URL;
 
