@@ -114,7 +114,6 @@ const FetchData = ({accountData, ACCOUNTS_ARRAY}) => {
     if (isLoading) {}
     if (isError) console.log(error.message)
 
-    console.log(profileData)
     useEffect(() => {
         if (isSuccess && profileData.success === false){
             refetchProfile()
@@ -128,7 +127,6 @@ const FetchData = ({accountData, ACCOUNTS_ARRAY}) => {
         }
     }, [isSuccess, profileData, refetchProfile])
 
-    console.log(availableShares)
     return(
         <>
         <div className="actions-section">

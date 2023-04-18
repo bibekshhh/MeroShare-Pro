@@ -282,6 +282,8 @@ export async function getRecentApplications(req, res) {
       return res.status(200).json({success: true, data: newResponse});    
     } catch (error) {
       retries--;
+      await logout(token);
+      
       if (retries === 0) {
         return res.status(500).json({ success: false, error: error.message });
       }
