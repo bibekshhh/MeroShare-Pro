@@ -18,3 +18,4 @@ jobs:
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_MEROSHARE_PRO }}'
           channelId: live
           projectId: meroshare-pro
+          entryPoint: /Client
